@@ -1,13 +1,50 @@
-# Agent Harness Loop Starter Kit
+# Claude × Codex Harness Loop Starter
 
-> **This folder is not "a project" — it is "how to start a project."**
-> When you begin a new project, clone this folder and you start out with a proven development process,
-> a 6-stage quality gate, a Foam knowledge base, and drift locking already in place **from day one**.
-> It exists so the next project never has to re-learn what was learned through trial and error.
->
-> **This is the "loop" edition** of the harness starter kit: on top of the base kit it adds a
-> **headless Claude↔Codex auto-collaboration loop** (Single Writer / Independent Reviewer, zero
-> copy-paste). See **§4** below and **TEMPLATE_MANIFEST.md §I**.
+> **Claude builds. Codex reviews. The gate re-runs everything — hallucinated results don't survive.**
+
+[![License: MIT](https://img.shields.io/github/license/WhiteNoiseK/claude-codex-harness-loop-starter)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/WhiteNoiseK/claude-codex-harness-loop-starter?style=social)](https://github.com/WhiteNoiseK/claude-codex-harness-loop-starter/stargazers)
+![Built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-8A2BE2)
+![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
+A **clone-and-go** starter kit for an autonomous **Claude↔Codex engineering loop**: one agent implements
+(Single Writer), a second independently reviews (Independent Reviewer), and a **two-layer gate refuses to
+advance on a _claim_ — only on a _re-run_**. On top of a proven 6-stage quality gate, a Foam knowledge base,
+and drift-locking, all in place **from day one**. (The "loop" edition of the base harness starter kit.)
+
+### Why it's different
+
+- 🔒 **Hallucination-proof gate** — every claimed pass count / coverage / type-check is **re-executed locally
+  and diffed** (`claimed == actual`). Fabricated numbers die at the AUDIT stage *and* again at the commit guard.
+- 🧩 **Claude uses zero headless commands** — the full 6-stage build runs **in-session** via the Agent tool;
+  only the reviewer (Codex) runs headless `codex exec`. **The loop keeps building even where `claude -p` is unavailable.**
+- ♾️ **Runs until a real problem** — findings self-heal in the FIX loop (severity is *not* a stop axis); it halts
+  only on 5 real triggers (trust-collapse · 3× retry · safety-boundary · judgmental · spec-conflict).
+
+```text
+  Single Writer (Claude, in-session)            Independent Reviewer (Codex, headless)
+           |                                                    |
+  RED -> GREEN -> VERIFY -> REVIEW -> FIX -> AUDIT  --handoff-->  R0 ... R4 review
+           |                                                    |
+           v                                                    v
+    FACT layer: local re-run              AND          LOGIC layer: reasoned review
+    (claimed == actual?)                                  (PASS / BLOCKED)
+           +------------------- both pass? ---------------------+
+                       |
+             yes -> [HARNESS] commit     |     no -> FIX self-heals, or STOP on 1 of 5 axes
+```
+
+## Quick start
+
+```bash
+# tracked-only export into a new project (no .git / caches dragged along)
+git clone --depth 1 https://github.com/WhiteNoiseK/claude-codex-harness-loop-starter my-project
+cd my-project && rm -rf .git && python scripts/harness_init.py    # harness_init is optional
+```
+
+Then, in **Claude Code**: turn on `.harness.toml [review_overlay]`, wire the headless reviewer
+([setup guide](docs/ai-workflow/codex_automation_setup_guide.md)), and run **`/kit:auto-harness`**.
+Full procedure → [§1](#1-how-to-start-a-new-project-clone-and-go) · all `/kit:` commands → [§4](#4-the-codex-auto-collaboration-loop-this-kits-addition).
 
 This kit was extracted from a **real instrumentation-software project** from which this methodology emerged.
 That project was both the most exemplary case of this methodology — and at the same time the one that most
