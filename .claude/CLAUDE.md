@@ -79,15 +79,30 @@ This project proceeds in **harness engineering** style, where AI agents code the
 - **Task-level execution**: one M-task in plan.md = one execution unit.
 - **Forward pipeline**: proceed sequentially in data-flow order. No parallel execution.
 
+**Multi-engine model** — the harness runs across three engines; each has a fixed role:
+
+| Engine | Role | Entry constraint file |
+|--------|------|-----------------------|
+| **Claude** | Orchestrator — plans, drives harness loop, runs verification, manages git | This file (CLAUDE.md) |
+| **Codex** | Reviewer (default) + Implementer when delegated — Stage 1 RED / Stage 2 GREEN / Stage 5 FIX | `CODEX.md` + `.codex/agents/*.toml` |
+| **Gemini** | Documentation Writer — docs/wiki only, never code | `GEMINI.md` |
+
+**Every engine** must comply with the universal rules and write-scope contract in `AGENTS.md §12`.
+When Claude delegates a task to Codex or Gemini, the prompt must begin with the
+"WRITE SCOPE IS CLOSED" header defined in `AGENTS.md §12.3`.
+
 ## 4. Task Execution Protocol
+
+> **Engine assignment per stage**: `AGENTS.md §12.4` — Codex runs Stage 1/2/5 when delegated; Claude orchestrates Stage 3/4/6.
+> Before delegating any stage to Codex or Gemini, prepend the "WRITE SCOPE IS CLOSED" header (`AGENTS.md §12.3`).
 
 ```
 1. Check the "next task" in progress.md
 2. Read the task's DoD in plan.md
-3. Write tests first with test-writer (RED)
-4. Implement with impl-coder (GREEN) → refactor (IMPROVE)
-5. Confirm pytest + mypy pass
-6. Review with code-reviewer + security-reviewer (Stage 4)
+3. Write tests first — Codex (test-writer.toml) or Claude (RED)
+4. Implement — Codex (impl-coder.toml) or Claude (GREEN) → refactor (IMPROVE)
+5. Confirm pytest + mypy pass (Claude runs this)
+6. Review — Claude + Codex in parallel (Stage 4)
 7. git commit -m "<type>(<task-id>): <description> [HARNESS]"
 8. Update progress.md (active → done, update next task)
 ```

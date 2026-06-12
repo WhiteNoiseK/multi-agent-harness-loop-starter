@@ -168,3 +168,72 @@ Rules:
 - **No concurrent writing**: do not put two writers on the same task at once (implement → halt → review → fix).
 - **Handoff**: pasting a chat prompt is standard, **first line = `[PROMPT-ID: <TASK>_<STAGE>_<TYPE>_<YYYYMMDD>_<NN>]`**. Review source text = `docs/ai-workflow/reviews/`, scores/audits = `docs/ai-workflow/scores/`.
 - **The second agent (e.g. Codex) reads this AGENTS.md as its entry point** and participates in the reviewer role of the protocol above.
+
+---
+
+## 12. Multi-Engine Harness: Roles, Write Scope & Universal Rules
+
+> **This section applies to ALL engines** (Claude, Codex, Gemini).
+> When an engine starts any task, it must read §12 first and comply unconditionally.
+> Engine-specific detail files: `CODEX.md` (Codex raw exec) · `GEMINI.md` (Gemini doc tasks).
+
+### 12.1 Engine Role Assignment
+
+| Engine | Role | Can Write | Cannot Write |
+|--------|------|-----------|-------------|
+| **Claude** | Orchestrator — drives harness loop, plans, verifies, manages git | Orchestration scope (`progress.md`, `scores/`, `reviews/`) + code only when acting as implementer | Safety boundaries without user approval |
+| **Codex** | Independent Reviewer (default) + Implementer when explicitly delegated — Stage 1 RED / Stage 2 GREEN / Stage 5 FIX via `.codex/agents/` named agents | Only files explicitly listed in the active task's DoD when acting as implementer; read-only when reviewing | `docs/**`, `.claude/**`, `.codex/**`, `.harness.toml`, build configs, CI files, `AGENTS.md`, `CODEX.md` |
+| **Gemini** | Documentation Writer — docs/wiki generation only | `docs/**` except governance files listed in §12.5 | `src/**`, `tests/**`, `scripts/**`, `.harness.toml`, `AGENTS.md`, `CODEX.md`, `GEMINI.md`, `.claude/**`, `.codex/**`, `*.toml`, `.github/**` |
+
+### 12.2 Universal Rules (ALL engines, no exceptions)
+
+1. **6-Stage Quality Gate** — every code change passes all 6 stages before commit (`docs/_harness/quality-gates.md`)
+2. **Safety Boundaries** — `.harness.toml [safety_boundary].paths` = STUB ONLY for every engine
+3. **`[HARNESS]` tag** — all AI-generated code commits must carry this tag (§7)
+4. **No unilateral commits** — no engine commits without an explicit user instruction
+5. **git hygiene** — run `git diff --name-status` before finishing; report every changed path; revert any out-of-scope change before reporting
+6. **No deletes** — never delete a file unless the prompt contains an explicit `DELETE LIST:` with that exact path
+7. **Session recovery** — read `docs/ai-workflow/progress.md` first on every cold start (§2 above)
+
+### 12.3 "WRITE SCOPE IS CLOSED" Protocol
+
+When Claude delegates any task to Codex or Gemini, the handoff prompt **must** open with:
+
+```
+WRITE SCOPE IS CLOSED.
+Read AGENTS.md §12 and CODEX.md (or GEMINI.md) before starting.
+
+You may create or modify ONLY these paths:
+- <path 1>
+- <path 2>
+
+You must not create, modify, delete, format, or normalize any other file.
+After finishing, run: git diff --name-status
+Report every changed path. Revert any out-of-scope change before reporting.
+Do not commit.
+```
+
+Omitting this header from a raw `codex exec` or Gemini call is an operator error — not a model error.
+
+### 12.4 Stage-by-Stage Engine Assignment
+
+The 6-stage gate runs regardless of which engine implements the task:
+
+| Stage | Primary Engine | Notes |
+|-------|---------------|-------|
+| 1 RED (write tests) | **Codex** (`test-writer.toml`) or Claude | Stage 1 output = `tests/` only; `src/` is read-only |
+| 2 GREEN (implement) | **Codex** (`impl-coder.toml`) or Claude | Stage 2 output = `src/` only; `tests/` is read-only |
+| 3 VERIFY (auto run) | **Claude** (runs `pytest` + `mypy`) | Shell only; no file writes |
+| 4 REVIEW (parallel) | **Claude + Codex** in parallel | Read-only for both; findings written to `scores/` |
+| 5 FIX | **Codex** (`refactor-fixer.toml`) or Claude | Scope limited to `findings[]` from Stage 4 |
+| 6 AUDIT | **Claude** (`score-auditor` agent) | Read-only + writes to `scores/` only |
+
+### 12.5 Gemini-Specific Rules
+
+- Gemini is a **Documentation Writer only** — it does not write code, run tests, or commit.
+- All Gemini output is **reviewed by Claude** before any commit.
+- Gemini prompt template must include the "WRITE SCOPE IS CLOSED" header (§12.3) with a docs-only allowlist.
+- Governance files that Gemini may **never** touch even within `docs/`:
+  `docs/_harness/**`, `docs/ai-workflow/progress.md`, `docs/ai-workflow/plan.md`,
+  `docs/ai-workflow/scores/**`, `docs/ai-workflow/reviews/**`
+- See `GEMINI.md` for the full constraint file.
