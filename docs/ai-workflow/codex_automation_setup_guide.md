@@ -1,4 +1,4 @@
-# Claude <-> Codex Automated Review Setup Guide (codex CLI headless)
+﻿# Claude <-> Codex Automated Review Setup Guide (codex CLI headless)
 
 > Purpose: paste/reference this whole file into another project's Claude so it can pull Codex independent reviews without any human copy-paste.
 > Verified end-to-end (install / auth / session resume / verdict capture).
@@ -113,13 +113,13 @@ Get-Content -LiteralPath $reply -Raw -Encoding utf8     # <- read the Codex verd
 
 After receiving a verdict:
 
-1. **Re-run locally**: `pytest / ruff / black / mypy` -> confirm `+-0` match against Codex's claimed numbers (blocks forged PASS).
+1. **Re-run locally**: `pytest / ruff / black / mypy` -> confirm `+-0` match against Codex claimed numbers (blocks forged PASS).
 2. **Severity decision**:
    - LOW / NIT / PASS + local-verify OK + no safety-boundary touch -> auto next step.
-   - MEDIUM+ / local mismatch / verdict BLOCKED/ADJUST / safety boundary (any path under `[safety_boundary]` in `.harness.toml` - e.g. `**/migrations/**`, `**/*secret*`, `.env*`, `**/order*` / destructive cmd / production deploy / out-of-scope dirty / single-authority spec / [HARNESS] commit) -> STOP and report to the user.
+   - MEDIUM+ / local mismatch / verdict BLOCKED/ADJUST / safety boundary (any path under `[safety_boundary]` in `.harness.toml` / destructive cmd / production deploy / out-of-scope dirty / single-authority spec / [HARNESS] commit) -> STOP and report to the user.
 3. Start with **dry-run** (no auto-commit, just report "this is what I would do") for a few cycles to build trust, then switch to auto.
 
-> Safety-boundary paths are project-specific: configure them per project in `.harness.toml` `[safety_boundary]`. The examples above are generic illustrations only.
+> Safety-boundary paths are project-specific: configure them per project in `.harness.toml [safety_boundary]`. The examples in that file are generic illustrations only.
 
 ---
 
@@ -152,5 +152,7 @@ After receiving a verdict:
 - Config (safety boundaries, gate thresholds): `.harness.toml`
 - 6-stage quality-gate spec: `docs/_harness/quality-gates.md`
 - Independent-reviewer protocol (R0-R4, 5-priority policy, stop triggers, PROMPT-ID convention): `docs/ai-workflow/codex_claude_review_protocol.md`
+- Loop operating policy: `docs/ai-workflow/codex_loop_operating_policy.md`
 - Stage subagents (already present): `.claude/agents/{test-writer,impl-coder,refactor-fixer,score-auditor}.md`
 - Task id grammar: `docs/_harness/TASK_ID_GRAMMAR.md`
+- Gemini doc/wiki generation (NOT code review): `docs/ai-workflow/gemini_automation_setup_guide.md`

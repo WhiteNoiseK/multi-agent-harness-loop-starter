@@ -1,13 +1,13 @@
 ---
-description: "Recommendation under the kit's recommendation policy (4-column scorecard: stability / security / maintainability / visibility + no temporary fixes). Append a focus area to weight that axis, or `--with-codex` for an independent second opinion on complex/high-stakes decisions."
-argument-hint: "[--with-codex] [optional: an axis or target to weight — e.g. 'security-focused', 'performance of this file', 'migration risk']"
+description: "Recommendation under the kit's recommendation policy (4-column scorecard: stability / security / maintainability / visibility). Claude + Codex each produce an independent scorecard, then synthesize. Append a focus area to weight that axis (e.g. 'security-focused', 'migration risk')."
+argument-hint: "[optional: an axis or target to weight — e.g. 'security-focused', 'performance of this file', 'migration risk']"
 ---
 
-# /kit:recommend — recommendation under the recommendation policy
+# /kit:recommend — dual-engine recommendation (Claude + Codex)
 
-Produce a recommendation for the decision / options / target currently under discussion, using the
-**recommendation policy**. If `$ARGUMENTS` is present, **weight that perspective/target**; otherwise balance
-the four axes in priority order.
+Produce a recommendation for the decision / options / target currently under discussion.
+**Claude and Codex each score independently, then synthesize.** This always runs as a two-engine panel —
+no flag needed.
 
 ## 0. Fixed criteria (the recommendation policy — do not change)
 
@@ -21,48 +21,78 @@ the four axes in priority order.
 
 Authority: `docs/pm-guide/recommendation_policy.md` (the scorecard + the auto-verification policy).
 
-## 1. Output format
+## 1. Execution flow (always runs both engines)
 
-1. If there is more than one option — a per-option **4-column table** + a "temporary fix?" column:
+### Step 1 — Claude's scorecard (solo, before seeing Codex)
 
-   | Option | Stability | Security | Maintainability | Visibility | Temp fix? |
-   |:--|:--|:--|:--|:--|:--|
+Claude produces its own 4-column scorecard + pick for each option:
 
-2. **One recommendation** + grounds (which axis it wins on) + why the rejected options lose.
-3. If `$ARGUMENTS` names a focus axis/target, **re-evaluate weighting it** — if the conclusion changes, say why.
-4. **Stop / confirm needed** (if any, listed separately): trust-collapse (claimed != actual / no fact layer) ·
-   safety boundary (schema/migration · secret · real-HW · single-authority spec) · judgmental decision
-   (frozen test · scope expansion · contract reversal) · spec/authority conflict (defer to the architect — no auto-ranking).
+| Option | Stability | Security | Maintainability | Visibility | Temp fix? |
+|:--|:--|:--|:--|:--|:--|
 
-## 2. Proceed rule (when code changes are involved)
+One recommendation + grounds (which axis it wins on) + why rejected options lose.
+If `$ARGUMENTS` names a focus axis/target, re-evaluate weighting it — if the conclusion changes, say why.
 
-- On an explicit "proceed as recommended" → run the internal 6-stage gate (REVIEW parallel + FIX loop + AUDIT)
-  through to commit.
-- **Severity is not a stop axis** — findings (incl. >= HIGH) self-heal in the FIX loop. Stops are only the
-  §1.4 axes (trust-collapse · safety-boundary · judgmental · authority-conflict · retry-exhaustion 3x).
+### Step 2 — Codex's independent scorecard
 
-## 3. Optional: `--with-codex` — independent second opinion (complex / high-stakes decisions)
+Claude writes a self-contained **ASCII-English handoff** to Codex — the decision context, the options,
+and the evaluation criteria (NOT Claude's scores — Codex must score independently). Send via:
 
-By default the recommendation is Claude's (Single Writer) alone. Append `--with-codex` to also get the
-Independent Reviewer's (Codex) own evaluation, then synthesize both. The extra step runs **only** when the
-flag is present.
+```
+codex exec "
+[RECOMMEND REVIEW]
+Decision: <one-line description>
+Options: <A, B, C …>
+Context: <relevant constraints from plan.md / research.md>
+Criteria: stability · security · maintainability · visibility (stability = highest priority tiebreaker)
+Task: Score each option on all 4 axes (High/Medium/Low + brief reason), pick one, and explain why.
+Do NOT echo any score I might have — score from first principles.
+"
+```
 
-1. Claude produces its own 4-column scorecard + pick (as in §1).
-2. Claude writes a self-contained **ASCII-English handoff** — the decision, the options, and Claude's
-   scorecard — and sends it to the reviewer via the headless bridge (`scripts/run_codex_review_bridge.py` /
-   `codex exec`, read-only; setup: `docs/ai-workflow/codex_automation_setup_guide.md`). Requires the review
-   overlay wired (a session id); if it is not, say so and fall back to the solo recommendation.
-3. The reviewer returns its **OWN independent 4-column scorecard + pick** — it must score the axes itself,
-   not echo Claude's.
-4. Claude **synthesizes**:
-   - **Agreement** → the shared pick with the combined grounds (higher confidence).
-   - **Disagreement** → show **both scorecards side by side** and name the exact axis they diverge on. Do
-     NOT average them away. If they diverge on the top axis (stability) or on a safety boundary, **escalate to
-     the architect** as a judgmental decision — do not auto-pick.
+Codex returns its **own independent 4-column scorecard + pick**. It must score the axes itself.
 
-This is the *perspective-diverse verify* pattern applied to a **decision** (not an implementation): two
-independent scorecards beat one, and a disagreement is itself the most useful signal. The reviewer reviews
-logic only (no code execution) — `--with-codex` is for the *decision*, not a fact check (that belongs to
-`/kit:auto-harness`).
+### Step 3 — Synthesis
+
+**Agreement** (same winner):
+> Shared pick with combined grounds — cite the axis both agreed on.
+> State confidence level: "High confidence — both engines agree on [axis]."
+
+**Disagreement** (different winners):
+> Show **both scorecards side by side**:
+
+| Axis | Claude | Codex |
+|:--|:--|:--|
+| Stability | … | … |
+| Security | … | … |
+| Maintainability | … | … |
+| Visibility | … | … |
+| **Pick** | Option X | Option Y |
+
+> Name the **exact axis they diverge on** and why. Do NOT average scores or auto-pick.
+> If divergence is on the top axis (stability) or touches a safety boundary →
+> **escalate to the architect** as a judgmental decision.
+
+## 2. Stop / confirm needed
+
+List separately (do not proceed unilaterally):
+- **Trust-collapse**: claimed != actual / no fact layer
+- **Safety boundary**: schema/migration · secret · real-HW · single-authority spec
+- **Judgmental decision**: frozen test · scope expansion · contract reversal
+- **Spec/authority conflict**: defer to the architect — no auto-ranking
+- **Engine divergence on stability axis or safety boundary** → escalate
+
+## 3. Proceed rule (when code changes are involved)
+
+On an explicit "proceed as recommended" from the architect → run the internal 6-stage gate
+(REVIEW parallel + FIX loop + AUDIT) through to commit.
+
+**Severity is not a stop axis** — findings (incl. >= HIGH) self-heal in the FIX loop. Stops are only the
+§2 axes above.
+
+## 4. Fallback
+
+If Codex is unavailable (session not wired / `codex exec` fails) → state so explicitly, deliver
+Claude's solo scorecard, and offer to retry when the bridge is available. Do not silently skip Step 2.
 
 > Cross-refs: `docs/pm-guide/recommendation_policy.md` · `docs/ai-workflow/codex_loop_operating_policy.md` (the 5 stop axes).

@@ -1,6 +1,10 @@
 {
   "permissions": {
-    "allow": []
+    "allow": [
+      "Bash(codex exec:*)",
+      "Bash(gemini -p *:*)",
+      "Bash(gemini --resume *:*)"
+    ]
   },
   "hooks": {
     "PreToolUse": [

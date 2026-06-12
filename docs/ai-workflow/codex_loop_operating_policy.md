@@ -1,4 +1,4 @@
-# Codex Loop Operating Policy
+﻿# Codex Loop Operating Policy
 
 <!-- ROLE BANNER: the operating policy for the automated Single-Writer / Independent-Reviewer loop.
      What this document decides: WHO does what, WHEN the loop auto-proceeds, and WHEN it must STOP.
