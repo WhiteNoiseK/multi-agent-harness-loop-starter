@@ -1,0 +1,8 @@
+verdict-id: _312
+verdict: PASS-with-nits
+
+high_closed: yes. `layer2_rerun_verify()` now requires at least one command+claim pair before accepting a rerun source: `pytest_cmd` plus `pytest_result` dict, or `mypy_cmd` plus `mypy_errors`, or `ruff_cmd` plus `ruff_errors`. A sole `pytest_cmd` without `pytest_result` now blocks before the pytest section can be skipped.
+
+new_findings: []
+
+notes: Source review confirms a full `pytest_cmd` + `pytest_result` pair still reruns and compares, and mypy-only / ruff-only command+claim pairs are accepted as verifiable. `_is_safe_tool_cmd`, `shell=False` execution, 6-stage `verify_stage_presence`, and runtime config loading remain intact. Exact pytest run: `156 passed, 11 errors`, all temp-path `PermissionError [WinError 5]` in this read-only sandbox. Exact mypy hit the local internal cache error, but `--no-sqlite-cache` passed. Ruff passed clean.

@@ -31,6 +31,15 @@
 #       placeholder-token substitution. A leftover unsubstituted token broke the
 #       guard with a NameError at import → substitution dropped. Now _harness_config
 #       reads .harness.toml at runtime but still works on defaults if the file is missing.
+#   (C) AUDIT gate validates the LATEST AUDIT (audit_gate_error → audits[-1]), not the
+#       first. A multi-AUDIT score file previously let a stale earlier pass mask a later
+#       fail/flag/permission-violation. fail→fix→pass retry history still passes.
+#   (D) score coercion via _as_number — a non-numeric score string ('100%','pass') no
+#       longer silently skips the ≥ threshold check (the old `isinstance(int,float)`
+#       guard let it through). Applies to AUDIT and REVIEW scores.
+#   (E) layer2 rejects a rerun source with NO re-runnable command — an empty VERIFY
+#       stage no longer passes the gate without any claimed==actual rerun.
+#       Self-test: tests/unit/test_commit_guard.py pins (A)/(C)/(D)/(E) + forgery.
 #
 # ── MUST NOT CHANGE (security-critical) ───────────────────────────────────────
 #   * _is_pytest_cmd  : blocks pytest_cmd forgery (rejects echo "7 passed" / shell chains)
@@ -132,6 +141,51 @@ def verify_stage_presence(stages: list[dict[str, Any]]) -> list[str]:
             continue
         missing.append(stage)
     return missing
+
+
+def _as_number(raw: Any) -> float | None:
+    """Coerce a score-like value to a number. None → 0.0 (unset = 0 = blocks);
+    a non-numeric string → None (a block signal).
+
+    Hardening: prevents the `isinstance(x, (int, float))` bypass where a string
+    score like '100%' or 'pass' silently skips the >= threshold check.
+    """
+    if raw is None:
+        return 0.0
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def audit_gate_error(task_id: str, stages: list[dict[str, Any]]) -> str | None:
+    """Validate the **latest** AUDIT/RED_TO_AUDIT entry — return a block message or None.
+
+    Uses the latest AUDIT (audits[-1]), NOT the first: in a multi-AUDIT score file
+    a stale earlier pass must not mask a later fail/flags/permission-violation. This
+    is consistent with how a rerun source would pick the most recent entry, while a
+    legitimate fail→fix→pass retry history (latest = pass) still passes.
+    """
+    audits = [s for s in stages if s.get("stage") in ("AUDIT", "RED_TO_AUDIT")]
+    if not audits:
+        return f"BLOCK: {task_id} has no AUDIT stage."
+    audit = audits[-1]
+    if audit.get("status") != "pass":
+        return (
+            f"BLOCK: {task_id} AUDIT status={audit.get('status')!r} (expected 'pass')"
+        )
+    score = _as_number(audit.get("score", 0))
+    if score is None:
+        return f"BLOCK: {task_id} AUDIT score is not numeric: {audit.get('score')!r}"
+    if score < AUDIT_SCORE_THRESHOLD:
+        return (
+            f"BLOCK: {task_id} AUDIT score={score} < threshold {AUDIT_SCORE_THRESHOLD}"
+        )
+    if audit.get("hallucination_flags", []):
+        return f"BLOCK: {task_id} hallucination_flags is not empty: {audit.get('hallucination_flags')}"
+    if audit.get("permission_matrix_violations", []):
+        return f"BLOCK: {task_id} permission_matrix_violations: {audit.get('permission_matrix_violations')}"
+    return None
 
 
 # Tools whose rerun commands the guard re-executes. Each command must be a single
@@ -284,6 +338,21 @@ def layer2_rerun_verify(stages: list[dict[str, Any]], repo_root: Path) -> list[s
         return ["VERIFY stage is missing or artifacts.pytest_cmd is empty"]
 
     art = verify.get("artifacts", {})
+    # The rerun source must carry at least one tool command WITH its claimed result,
+    # so an actual claimed==actual rerun happens. A *_cmd with no matching claim
+    # (e.g. pytest_cmd but no pytest_result dict) skips its rerun and verifies
+    # nothing → unverifiable record, block. (Codex _311: an empty-command block
+    # alone is insufficient; a command-without-claim must also be rejected.)
+    has_verifiable_pair = (
+        (art.get("pytest_cmd") and isinstance(art.get("pytest_result"), dict))
+        or (art.get("mypy_cmd") and art.get("mypy_errors") is not None)
+        or (art.get("ruff_cmd") and art.get("ruff_errors") is not None)
+    )
+    if not has_verifiable_pair:
+        return [
+            "the rerun source (VERIFY/bundled) has no verifiable command+claim pair "
+            "(e.g. pytest_cmd without pytest_result) — unverifiable record rejected"
+        ]
 
     # pytest
     pytest_cmd = art.get("pytest_cmd")
@@ -468,31 +537,10 @@ def main() -> int:
         log_block(f"  File: {score_file}")
         return 2
 
-    # Check AUDIT pass + score ≥ threshold + hallucination_flags == []
-    audit = next(
-        (s for s in stages if s.get("stage") in ("AUDIT", "RED_TO_AUDIT")), None
-    )
-    if audit is None:
-        log_block(f"BLOCK: {task_id} has no AUDIT stage.")
-        return 2
-    if audit.get("status") != "pass":
-        log_block(
-            f"BLOCK: {task_id} AUDIT status={audit.get('status')!r} (expected 'pass')"
-        )
-        return 2
-    score = audit.get("score", 0) or 0
-    if isinstance(score, (int, float)) and score < AUDIT_SCORE_THRESHOLD:
-        log_block(
-            f"BLOCK: {task_id} AUDIT score={score} < threshold {AUDIT_SCORE_THRESHOLD}"
-        )
-        return 2
-    hflags = audit.get("hallucination_flags", [])
-    if hflags:
-        log_block(f"BLOCK: {task_id} hallucination_flags is not empty: {hflags}")
-        return 2
-    pviols = audit.get("permission_matrix_violations", [])
-    if pviols:
-        log_block(f"BLOCK: {task_id} permission_matrix_violations: {pviols}")
+    # Check the LATEST AUDIT: pass + score ≥ threshold + flags=[] + pviols=[]
+    audit_err = audit_gate_error(task_id, stages)
+    if audit_err is not None:
+        log_block(audit_err)
         return 2
 
     # Check REVIEW stages have CRITICAL/HIGH=0 (both code + security)
@@ -507,8 +555,13 @@ def main() -> int:
                 f"BLOCK: {task_id} REVIEW({agent}) CRITICAL={crit} HIGH={high} (both must be 0)"
             )
             return 2
-        rscore = rv.get("score", 0) or 0
-        if isinstance(rscore, (int, float)) and rscore < REVIEW_SCORE_THRESHOLD:
+        rscore = _as_number(rv.get("score", 0))
+        if rscore is None:
+            log_block(
+                f"BLOCK: {task_id} REVIEW({agent}) score is not numeric: {rv.get('score')!r}"
+            )
+            return 2
+        if rscore < REVIEW_SCORE_THRESHOLD:
             log_block(
                 f"BLOCK: {task_id} REVIEW({agent}) score={rscore} < {REVIEW_SCORE_THRESHOLD}"
             )

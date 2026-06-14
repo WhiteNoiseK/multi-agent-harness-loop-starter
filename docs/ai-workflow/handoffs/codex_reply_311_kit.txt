@@ -1,0 +1,16 @@
+verdict-id: _311
+verdict: BLOCKED
+
+findings: [
+  {
+    severity: "HIGH",
+    file: "scripts/harness_audit_rerun.py:340",
+    issue: "Layer2 now blocks a rerun source with no command, but still allows a rerun source with a command and no corresponding claimed result. Example: a VERIFY stage with `pytest_cmd` but no `pytest_result` is not empty, reaches line 352, skips pytest execution because `pytest_result` is not a dict, and can return no errors. That is still an unverifiable record and does not preserve claimed==actual rerun."
+  }
+]
+
+security_intact: Yes for the explicitly protected pieces. `_is_safe_tool_cmd` remains the shared allowlist, `run_cmd` still uses `shell=False`, `verify_stage_presence` still enforces the 6-stage Layer1, and config loading remains runtime-driven.
+
+latest_audit_ok / string_score_ok / empty_source_ok: latest_audit_ok yes, `audit_gate_error()` validates `audits[-1]`. string_score_ok yes, `_as_number()` blocks non-numeric scores and makes `None` become 0.0. empty_source_ok partially: a source with no command blocks, but a source with a command and no matching result claim still passes without rerun.
+
+notes: Exact pytest run could not fully verify in this read-only sandbox: `156 passed, 10 errors`, all temp-path `PermissionError [WinError 5]`. Exact mypy hit a local mypy internal cache error, but `--no-sqlite-cache` passed. Exact ruff failed creating `.ruff_cache`; `--no-cache` passed.
