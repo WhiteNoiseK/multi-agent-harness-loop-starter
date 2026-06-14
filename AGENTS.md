@@ -28,7 +28,11 @@ This document is the top-level instruction for every AI agent — including the 
 > - **System/Format Rules (System)** = how-to-write/convention/process/template/rule → `#authority/system/{absolute | active | inactive | deprecated}` (규칙: 절대/활성/비활성/폐기)
 >
 > ⚠️ Rules have **no "derived"** (a rule without authority is not a rule); only Knowledge has `derived`.
-> Full taxonomy and metadata-block format: [docs/_knowledge-architecture.md §2](docs/_knowledge-architecture.md).
+> ⚠️ **`single` is a file-level label, not a content-importance flag.** Working docs (`plan`/`progress`/`research`/`logs`)
+> and draft design specs are **always `domain/derived`** (a top-level charter is the exception — `domain/supreme` even while draft).
+> A binding quantitative target inside a derived doc is a **"priority" item**: comply with it, but it gets **no `#authority` tag of its own**
+> while the host file keeps its `domain/derived` tag. A `single` file is born only after the Gate P freeze.
+> Full taxonomy, the single-vs-priority rule, and metadata-block format: [docs/_knowledge-architecture.md §2](docs/_knowledge-architecture.md).
 
 ---
 

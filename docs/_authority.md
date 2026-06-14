@@ -6,5 +6,4 @@
 
 | Document | Version | Last Updated |
 |:---|:---:|:---:|
-| [_knowledge-architecture.md](_knowledge-architecture.md) | — | 2026-06-04 |
-| [pm-guide/ProductProposal.md](pm-guide/ProductProposal.md) | — | 2026-06-04 |
+| [_knowledge-architecture.md](_knowledge-architecture.md) | — | 2026-06-14 |

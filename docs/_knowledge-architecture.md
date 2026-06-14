@@ -6,7 +6,7 @@
 
 | Item | Value |
 |:---|:---|
-| Current version | v0.1 |
+| Current version | v0.2 |
 | Created | {{TEMPLATE_BASELINE_DATE}} |
 | Last updated | {{TEMPLATE_BASELINE_DATE}} |
 | Status | authoritative |
@@ -143,3 +143,4 @@ Field4, Field5(unit),
 | Version | Date | Change | Decided by |
 |:---|:---|:---|:---|
 | v0.1 | {{TEMPLATE_BASELINE_DATE}} | template baseline — the canonical format conventions at the time of starter-kit extraction (trust model, two conventions, file naming, links, headers, MOC, authority registry, field-cascade spec-header convention). Project content is owned by §8 (orthogonal separation). | {{ARCHITECT}} |
+| v0.2 | 2026-06-14 | §2 "single vs priority" added — `domain/single` is a FILE-level label (whole-file frozen definition); "priority authority" = binding quantitative items inside a `derived` doc (comply, but no `#authority` tag of their own; host keeps `domain/derived`); working/draft docs are always `derived` (charter is the `domain/supreme` exception); legacy bare `status: authoritative` deprecated as a standalone classifier. Synced from global `authority-declaration.md` §1.5. | {{ARCHITECT}} |

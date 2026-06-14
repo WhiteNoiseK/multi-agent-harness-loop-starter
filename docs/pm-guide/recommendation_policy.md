@@ -28,11 +28,14 @@ Example format:
 > Default priority: **stability > recoverability > security > visibility > maintainability > performance** (adjust per project NFR in `.harness.toml` or the charter — e.g. security rises toward the top for networked/multi-user/data-sensitive systems).
 > The **release-blocking** counterpart of the Security axis is [Gate S — Pre-deployment Security Audit](security_gate.md).
 
-## 2. Single-Authority Values Are Not Options
+## 2. Authority-Bound Values Are Not Options — priority **and** single
 
-A value *defined* by the single authoritative spec (e.g., angle range, unit, identifier convention) is **to be complied with**, not offered as a proposal/option.
-If the code differs from the spec = the code is wrong. Question/propose **only the open items (process/wiring/spec refinement)**.
-(Basis: single authority §8 + [STAGE_DEFINITION_RISKS.md](STAGE_DEFINITION_RISKS.md) Gate P.)
+An **authority-bound** value is **to be complied with**, never offered as a proposal/option. Two cases:
+- **Priority authority (우선권위 — the default early in a project)**: a binding quantitative (performance/function) target still living *inside a derived working doc* (plan/progress/research) **before** it is frozen into a spec at Gate P. Comply with it, even though its host file is non-authoritative.
+- **Single authority (post-Gate-P)**: a value *defined* by a frozen single-authoritative spec (e.g., angle range, unit, identifier convention). If the code differs from the spec = the code is wrong.
+
+Question/propose **only the open items (process/wiring/spec refinement)** — never an authority-bound value.
+(Basis: priority authority [_knowledge-architecture.md §2](../_knowledge-architecture.md) · single authority §8 · [STAGE_DEFINITION_RISKS.md](STAGE_DEFINITION_RISKS.md) Gate P.)
 
 ## 3. If Code Modification Is Involved = Run the 6 Stages Automatically
 

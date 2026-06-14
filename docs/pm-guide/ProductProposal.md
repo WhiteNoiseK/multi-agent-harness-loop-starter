@@ -6,7 +6,7 @@
 # Product Proposal / Charter — {{PROJECT_NAME}}
 
 > **Version**: v0.1 (draft) · **Date**: {{YYYY-MM-DD}} · **Author**: {{ARCHITECT}}
-> **Status**: ⚠ draft (Gate I not passed) — on finalization change to `status: authoritative`
+> **Status**: ⚠ draft (Gate I not passed) — on finalization (Gate I pass), this document's authority level becomes `authoritative`.
 > Macro process: [lifecycle-standard.md](lifecycle-standard.md) · Gate: [PHASE_GATES.md](PHASE_GATES.md) Gate I
 
 ---
