@@ -39,8 +39,23 @@ Top metadata block for a living document (required):
 | Current version | vX.Y |          (required)
 | Created | YYYY-MM-DD |              (optional — creation date)
 | Last updated | YYYY-MM-DD |         (required — primary source for recency tracking)
-| Status | authoritative | active | deprecated |   (required)
+| Status | [Authority Level] |        (required)
+#authority/[type]/[level]             (required tag for Obsidian Graph View)
 ```
+
+**Authority Taxonomy (Tags and Status):**
+
+**1. Project Knowledge (Domain Authority)** — Actual content, specs, decisions.
+- `#authority/domain/supreme` (Supreme Authority): The highest level project charter/goals (e.g., ProductProposal).
+- `#authority/domain/single` (Single Authority / SSOT): The single source of truth for a specific domain (e.g., Data Spec, Legal Opinion).
+- `#authority/domain/derived` (Derived / Non-authoritative): Working docs, snapshots, or research derived from authoritative sources.
+- `#authority/domain/deprecated` (Deprecated): Abandoned ideas or old specs.
+
+**2. System/Format Rules (System Authority)** — Rules on how to write docs and system conventions.
+- `#authority/system/absolute` (Absolute Authority Rule): Inviolable core architecture rules (e.g., _knowledge-architecture.md).
+- `#authority/system/active` (Active Rule): Currently active operational rules and templates.
+- `#authority/system/inactive` (Inactive Rule): Rules that are currently not in use but kept for reference.
+- `#authority/system/deprecated` (Deprecated Rule): Abandoned conventions. (Note: There is no "non-authoritative rule", as a rule without authority is not a rule.)
 
 On change, add a line to the change-history table at the bottom of the document: `| Version | Date | Change | Decided by |`
 

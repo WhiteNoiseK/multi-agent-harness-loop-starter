@@ -21,6 +21,15 @@ This document is the top-level instruction for every AI agent — including the 
 | [docs/index.md](docs/index.md) | **Knowledge-base entry point (MOC)** — most-recent/authority catalogs. Format conventions: [docs/_knowledge-architecture.md](docs/_knowledge-architecture.md) |
 | [docs/ai-workflow/codex_claude_review_protocol.md](docs/ai-workflow/codex_claude_review_protocol.md) | **Multi-agent collaboration** — Single Writer / Independent Reviewer (e.g. Claude ↔ Codex), R0–R4 |
 
+> **📌 Document authority declaration (mandatory on creation).** When creating any project-knowledge or
+> system-rule document, put the authority tag on the line **right below the H1 title**: `#authority/[type]/[level]`.
+> The naming **differs by category** — do not mix them up:
+> - **Project Knowledge (Domain)** = content/spec/decision/research → `#authority/domain/{supreme | single | derived | deprecated}` (지식: 최고/단일/**파생(비권위)**/폐기)
+> - **System/Format Rules (System)** = how-to-write/convention/process/template/rule → `#authority/system/{absolute | active | inactive | deprecated}` (규칙: 절대/활성/비활성/폐기)
+>
+> ⚠️ Rules have **no "derived"** (a rule without authority is not a rule); only Knowledge has `derived`.
+> Full taxonomy and metadata-block format: [docs/_knowledge-architecture.md §2](docs/_knowledge-architecture.md).
+
 ---
 
 ## 2. Required Pre-action Hook When an Agent Resumes
