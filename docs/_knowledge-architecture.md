@@ -60,9 +60,15 @@ Top metadata block for a living document (required):
 **Single-authority is a FILE-only label — distinguish it from "priority authority" (content):**
 - `domain/single` is assigned ONLY when the WHOLE file is a frozen definition of one domain (the file wins on conflict — "if code differs, the code is wrong"). A working doc that mixes process/log/analysis with a few defined values is NOT single → `domain/derived`.
 - Litmus (one question): "Does this **file** own a definition and **win** on conflict?" → single. "Is it **derived** and **yields** on conflict?" → derived. Decide by the file's ROLE, not by how important its content is.
-- **Priority authority** = binding quantitative (performance/function) items INSIDE a derived working doc. They MUST be complied with, but the host file stays non-authoritative — do NOT give them an `#authority` tag (kept separate from the file-level system); mark them in-text as "priority authority".
-- Lifecycle: priority-authority items accumulate inside derived docs → frozen at Gate P (or a domain freeze) → only THEN is a single-authority FILE (e.g. `docs/engineering/<spec>.md`) born. Hence early in a project the knowledge domain has few/no single-authority files.
-- Process/working docs (plan, progress, research, logs, glossary, test plan, decisions, per-task docs) and **draft design specs** are ALWAYS `domain/derived`; reword any internal "single-authority" self-marking to "priority authority".
+- **Priority authority** = binding quantitative (performance/function) items INSIDE a derived working doc; they MUST be complied with.
+  - It is NOT a fifth authority level and receives NO `#authority/...` tag of its own (an item-level concept).
+  - The **host file keeps its file-level tag** (usually `#authority/domain/derived`) — having priority items does not remove the file's tag.
+  - Ranking: a priority item YIELDS to `domain/supreme`, `domain/single`, and `system/*` rules, but OUTRANKS ordinary narrative in the same derived doc.
+  - Mark them in-text as "priority authority" (kept separate from the file-level tag system).
+- Lifecycle: priority-authority items accumulate inside derived docs → frozen at the project's freeze gate (e.g. **Gate P** in this starter kit) → only THEN is a single-authority FILE born (by convention `docs/engineering/<spec>.md` — a configured convention, not universal law). Hence early in a project the knowledge domain has few/no single-authority files.
+- ALWAYS `domain/derived`: process/working docs (plan, progress, research, logs, test plan, decisions, per-task docs), **draft/evolving design specs**, and **working glossaries** (a glossary becomes `domain/single` only if frozen and split/moved into a dedicated, registered spec). Reword any internal "single-authority" self-marking to "priority authority".
+- **A charter is the exception**: a top-level goals/scope charter is `domain/supreme` by ROLE (not `single`), and **stays supreme even while draft** — the "draft → derived" rule applies only to would-be single-authority specs, never to the supreme charter.
+- **Legacy `status: authoritative` is deprecated as an authority classifier**: file-level authority is determined by the `#authority/...` tag plus the §8 / single-authority registry (the old binary status is valid only when paired with a file-level authority tag).
 
 On change, add a line to the change-history table at the bottom of the document: `| Version | Date | Change | Decided by |`
 
