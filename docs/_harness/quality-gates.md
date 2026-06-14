@@ -44,6 +44,8 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
+> **Ring scope** ([compositional-verification.md](compositional-verification.md)): this 6-stage loop automates the **Unit ring** — Stage 3 VERIFY runs **scoped unit tests**. The **Module / Integration rings** (real-boundary; emulator/device) run **outside** this loop. `commit [HARNESS]` = **Unit-ring closure**, *not* trusted-unit promotion (which waits for the Integration ring passing).
+
 ---
 
 ## 1. Per-Stage Scoring Criteria

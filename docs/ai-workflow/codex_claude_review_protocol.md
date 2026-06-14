@@ -8,6 +8,7 @@
 > participates as the independent reviewer (e.g., **Claude implements ↔ Codex reviews independently**, or Gemini /
 > another Claude instance). Enabled via `.harness.toml [review_overlay].enabled`.
 > Purpose: fix each agent's work timing, review timing, and output format to prevent simultaneous edits to the same file and authority confusion.
+> **Ring scope**: this R0~R4 overlay reviews the **Unit ring** loop; `R4 CLOSE` = Unit-ring closure, *not* trusted-unit promotion. The Module/Integration rings run separately — [`../_harness/compositional-verification.md`](../_harness/compositional-verification.md).
 
 ---
 

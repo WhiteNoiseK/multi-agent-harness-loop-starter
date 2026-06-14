@@ -85,7 +85,7 @@ This standard fuses three things into one:
 - **Purpose**: Incremental delivery of code whose integrity is proven. **A 6-stage gate loop per task.**
 - **Loop**: RED (test-writer, tests/ only) → GREEN (impl-coder, src/ only) → VERIFY (run_verify.sh) → REVIEW (code + security in parallel) → FIX (refactor-fixer, findings scope) → AUDIT (score-auditor re-run). Safety boundaries get an independent-reviewer R0–R4 overlay.
 - **Pass**: each stage meets its threshold + CRITICAL/HIGH = 0 + hallucination_flags = [].
-- **Forward build**: in data-flow order (M1 infrastructure → M2 adapters → M3 core → M4 frontend → M5 integration). External-dependency tasks are deferred with explicit stub/mock (an intentional facade at the build-order level).
+- **Forward build**: in data-flow order (M1 infrastructure → M2 adapters → M3 core → M4 frontend → M5 integration). External-dependency tasks are deferred with explicit stub/mock (an intentional facade at the build-order level). *("M5 integration" is a build-order **milestone**, not the verification **Integration ring** — [../_harness/compositional-verification.md](../_harness/compositional-verification.md) §0.)*
 - Details: `docs/_harness/quality-gates.md`.
 
 ### S5 — MONITORING & CONTROLLING · cross-cutting, runs alongside S4 · PMBOK M&C
@@ -98,7 +98,7 @@ This standard fuses three things into one:
 - **Deployment gate (hard)**: production requires an explicit **`[RELEASE APPROVED]`** approval + a citation of the delivery verification number **that cites a passed Gate S**. Record in `deployment_log.md`.
 
 ### S7 — REVIEW / ASSETIZATION · VHCP Phase 6
-- **Deliverables**: `docs/retrospective/lessons_learned.md` + **promotion to agent memory (MEMORY.md)**.
+- **Deliverables**: `docs/retrospective/lessons_learned.md` + **promotion to agent memory (MEMORY.md)**. *(This **memory promotion** is distinct from the verification ladder's **trusted-unit promotion** — [../_harness/compositional-verification.md](../_harness/compositional-verification.md) §3.)*
 - ⚠ In the original project, lessons_learned was left empty and the learnings accumulated only in memory — fill both and cross-link them.
 
 ---

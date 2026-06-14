@@ -7,7 +7,7 @@ argument-hint: "<task_id> [test_paths] [src_paths]"
 
 Invoked right after the user completes Stage 1 (RED, test-writer) + Stage 2 (GREEN, impl-coder). This command automatically chains Stages 3–6 and records the results in `{{SCORES_DIR}}/<task_id>.json` + `.verify.json`.
 
-> This document is the **single source for the stage → agent/script mapping**. To change the mapping, change it here only.
+> This document is the **single source for the stage → agent/script mapping**. To change the mapping, change it here only. (This automation drives the **Unit ring** only; the Module/Integration rings run separately — [compositional-verification.md](../../../docs/_harness/compositional-verification.md).)
 
 | Stage | Performed by | Output |
 |:--|:--|:--|

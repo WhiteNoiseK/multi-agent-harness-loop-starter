@@ -81,7 +81,7 @@ For the mapping to the macro lifecycle (8 stages, including Research/Feasibility
 - For checking the functional-spec form and the `plan.md` writing procedure, follow the Phase 2 guidance in `.claude/CLAUDE.md`.
 
 ### Self-Verification and Test Enforcement (TDD & DoD)
-- When writing production code, always write the corresponding unit-level test code at the same time.
+- When writing production code, always write the corresponding unit-level test code at the same time. *(This is the **Unit ring**; prove the real boundary at the **Module ring** and the full feature at the **Integration ring** before trusted-unit promotion — see `docs/_harness/compositional-verification.md`.)*
 - Compose test cases comprehensively based on the **DoD (Definition of Done)** specified in `plan.md`.
 - Run the tests yourself in the terminal and confirm a 'Pass' result on the console before proceeding to the next task.
 - Include the technical risks/spike-verification items identified in `research.md` in your tests.

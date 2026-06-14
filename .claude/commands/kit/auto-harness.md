@@ -95,7 +95,7 @@ Claude subagents already exist at `.claude/agents/{test-writer,impl-coder,refact
      (code != spec means the code is wrong -> auto-fix, but a genuine authority-vs-authority conflict stops).
 - **5-priority order, always**: stability > security > maintainability > visibility (readability), plus
   **no temporary fixes** (fix it cleanly once; no deprecate-and-migrate that leaves two systems coexisting).
-- No full suite (scoped tests only). Preserve out-of-scope dirty / uncommitted changes (user-edited files join
+- No full suite (scoped tests only — the scoped run = the **Unit ring**; the Module/Integration rings run separately, see [compositional-verification.md](../../../docs/_harness/compositional-verification.md)). `[HARNESS]` commit / R4 CLOSE = **Unit-ring closure**, not trusted-unit promotion. Preserve out-of-scope dirty / uncommitted changes (user-edited files join
   in their own task, not this one).
 
 ## 4. Completion report

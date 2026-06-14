@@ -43,7 +43,7 @@ Legend: 🟢 pass condition · 🔴 if you don't (a real case from the original 
 
 ## Gate (per-task) — Executing 6 stages
 
-- 🟢 **(prerequisite) R0 Skeleton review PASS (CRITICAL/HIGH = 0) — absolutely no starting RED/implementation until it passes** → RED ≥ 90 → GREEN ≥ 85 → VERIFY (binary) → REVIEW ≥ 95 ∧ CRITICAL = HIGH = 0 → FIX (scope) → AUDIT ≥ 95 ∧ hallucination_flags = []. Safety boundaries use Codex R0–R4.
+- 🟢 **(prerequisite) R0 Skeleton review PASS (CRITICAL/HIGH = 0) — absolutely no starting RED/implementation until it passes** → RED ≥ 90 → GREEN ≥ 85 → VERIFY (binary) → REVIEW ≥ 95 ∧ CRITICAL = HIGH = 0 → FIX (scope) → AUDIT ≥ 95 ∧ hallucination_flags = []. Safety boundaries use Codex R0–R4. *(This per-task gate covers the **Unit ring**; `commit [HARNESS]` = Unit-ring closure. Module/Integration rings + trusted-unit promotion: [../_harness/compositional-verification.md](../_harness/compositional-verification.md).)*
 - 🔴 Gate forgery (echo "7 passed"), the reverse bias where tests are bent to fit the implementation.
 - 🛡 Permission-separated agents (tests/ only ↔ src/ only) + run_verify + commit-guard re-run (anti-forgery) + `quality-gates.md`.
 

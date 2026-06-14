@@ -92,6 +92,8 @@ When the user requests "continue," "next task," "resume," **"context check"**, e
 ```
 
 > The responsible agent and permission matrix for each step are single-sourced in [.claude/commands/kit/harness-verify.md](.claude/commands/kit/harness-verify.md) and [docs/_harness/quality-gates.md](docs/_harness/quality-gates.md). This section only summarizes the flow.
+>
+> **Ring scope**: this per-task chain (RED→…→`[HARNESS]` commit) is the **Unit ring**. `commit [HARNESS]` = Unit-ring closure, *not* trusted-unit promotion; the **Module/Integration rings** (real-boundary; emulator/device) run separately — [docs/_harness/compositional-verification.md](docs/_harness/compositional-verification.md).
 
 ---
 

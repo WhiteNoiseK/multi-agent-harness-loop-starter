@@ -45,6 +45,8 @@
 - System (L4) uses IPC for real, with external dependencies replaced by mocks.
 - E2E (L5) is the full path — real input/output.
 
+> **Pyramid vs compositional rings**: L1–L5 above are the *test-pyramid* (test type/scope by tooling). The compositional **Unit/Module/Integration rings** ([../_harness/compositional-verification.md](../_harness/compositional-verification.md)) are a *refinement, not an equivalence* — notably the **Module ring** tests the **real boundary** (emulator/device), which L3 "Integration (fake adapters)" deliberately mocks. See its §0 terminology bridge.
+
 ---
 
 ## 2. Milestone × Coverage Gate

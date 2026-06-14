@@ -140,7 +140,7 @@ deliberately absent — see section 2.)
 
 Also enforced throughout:
 
-- Scoped runs only — never a full suite when a scoped run answers the question.
+- Scoped runs only — never a full suite when a scoped run answers the question. (The scoped run = the **Unit ring**; the Module/Integration rings run separately — [`../_harness/compositional-verification.md`](../_harness/compositional-verification.md). `[HARNESS]` commit / R4 CLOSE = **Unit-ring closure**, not trusted-unit promotion.)
 - Out-of-scope dirty working-tree changes are preserved and left uncommitted (a human's direct edits join
   in their own task).
 

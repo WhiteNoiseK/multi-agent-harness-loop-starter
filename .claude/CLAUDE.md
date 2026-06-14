@@ -153,6 +153,8 @@ If the catalog is stale, regenerate with `python scripts/foam_catalog.py` / `pyt
 - **Integration-test stage**: run the full integration test suite.
 - **Final stage**: run the E2E tests.
 
+> **Ring naming**: the "integration-test"/"E2E" stages above are the kit's test-pyramid levels. The compositional **Unit/Module/Integration rings** ([docs/_harness/compositional-verification.md](../docs/_harness/compositional-verification.md)) are a *separate axis* — see its §0 terminology bridge.
+
 > The actual command strings are single-sourced in `.harness.toml [language]` (`test_cmd`/`coverage_cmd`/`type_cmd`).
 
 ## 8. Single-Authority Specifications (enforced rule)
