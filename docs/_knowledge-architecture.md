@@ -57,6 +57,13 @@ Top metadata block for a living document (required):
 - `#authority/system/inactive` (Inactive Rule): Rules that are currently not in use but kept for reference.
 - `#authority/system/deprecated` (Deprecated Rule): Abandoned conventions. (Note: There is no "non-authoritative rule", as a rule without authority is not a rule.)
 
+**Single-authority is a FILE-only label — distinguish it from "priority authority" (content):**
+- `domain/single` is assigned ONLY when the WHOLE file is a frozen definition of one domain (the file wins on conflict — "if code differs, the code is wrong"). A working doc that mixes process/log/analysis with a few defined values is NOT single → `domain/derived`.
+- Litmus (one question): "Does this **file** own a definition and **win** on conflict?" → single. "Is it **derived** and **yields** on conflict?" → derived. Decide by the file's ROLE, not by how important its content is.
+- **Priority authority** = binding quantitative (performance/function) items INSIDE a derived working doc. They MUST be complied with, but the host file stays non-authoritative — do NOT give them an `#authority` tag (kept separate from the file-level system); mark them in-text as "priority authority".
+- Lifecycle: priority-authority items accumulate inside derived docs → frozen at Gate P (or a domain freeze) → only THEN is a single-authority FILE (e.g. `docs/engineering/<spec>.md`) born. Hence early in a project the knowledge domain has few/no single-authority files.
+- Process/working docs (plan, progress, research, logs, glossary, test plan, decisions, per-task docs) and **draft design specs** are ALWAYS `domain/derived`; reword any internal "single-authority" self-marking to "priority authority".
+
 On change, add a line to the change-history table at the bottom of the document: `| Version | Date | Change | Decided by |`
 
 > **This metadata block is a load-bearing (functionally depended-upon) convention.** `scripts/foam_catalog.py` parses the `Last updated` field
