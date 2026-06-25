@@ -28,11 +28,18 @@ CLAUDE_MD = _ROOT / ".claude" / "CLAUDE.md"
 # Same noise as the Foam graph exclusion (transient/build artifacts) + the generated files themselves
 _EXCLUDE_DIRS = {"handoffs", "word_export", "node_modules"}
 _EXCLUDE_DIR_PREFIX = ("_tmp_",)
-_GENERATED = {"_recent.md", "_authority.md", "index.md", "_field_cascade.md"}  # exclude hub/generated files
+_GENERATED = {
+    "_recent.md",
+    "_authority.md",
+    "index.md",
+    "_field_cascade.md",
+}  # exclude hub/generated files
 
 _RE_FILENAME_DATE = re.compile(r"_(\d{4})(\d{2})(\d{2})")
 _RE_UPDATED = re.compile(r"(?:Last\s*Updated|Updated)[^\n\d]{0,12}(\d{4}-\d{2}-\d{2})")
-_RE_CREATED = re.compile(r"(?:First\s*Authored|Created|Authored)[^\n\d]{0,12}(\d{4}-\d{2}-\d{2})")
+_RE_CREATED = re.compile(
+    r"(?:First\s*Authored|Created|Authored)[^\n\d]{0,12}(\d{4}-\d{2}-\d{2})"
+)
 _RE_VERSION = re.compile(r"Current\s*Version[^\nv]{0,12}(v\d+\.\d+(?:\.\d+)?)")
 _RE_STATUS_AUTH = re.compile(r"[Ss]tatus[^\n]{0,12}authoritative")
 _RE_DOCS_PATH = re.compile(r"docs/([^\s`)\]]+\.md)")
@@ -42,13 +49,13 @@ _RE_DOCS_PATH = re.compile(r"docs/([^\s`)\]]+\.md)")
 class Doc:
     """Document metadata for one catalog row."""
 
-    rel: str         # path relative to docs/
-    domain: str      # top-level folder (= domain)
-    rdate: date      # decided recency date
-    source: str      # source of that date (updated/created/filename/git/mtime)
-    version: str     # version found in the body (empty if none)
+    rel: str  # path relative to docs/
+    domain: str  # top-level folder (= domain)
+    rdate: date  # decided recency date
+    source: str  # source of that date (updated/created/filename/git/mtime)
+    version: str  # version found in the body (empty if none)
     authority: bool  # whether it is an authority document (§8 or status:authoritative, excluding deprecated)
-    deprecated: bool # whether it is in the §8 Deprecated list
+    deprecated: bool  # whether it is in the §8 Deprecated list
 
 
 def _parse_iso(s: str) -> date | None:
@@ -133,7 +140,10 @@ def _git_date(path: Path) -> date | None:
     try:
         out = subprocess.run(
             ["git", "log", "-1", "--format=%cs", "--", path.name],
-            cwd=path.parent, capture_output=True, text=True, timeout=10,
+            cwd=path.parent,
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         return _parse_iso(out.stdout.strip())
     except Exception:
@@ -179,7 +189,9 @@ def collect(docs_dir: Path = DOCS) -> list[Doc]:
         domain = rel.split("/")[0] if "/" in rel else "(root)"
         deprecated = rel in dep_set
         authority = (not deprecated) and (rel in auth_set or has_authority_status(text))
-        out.append(Doc(rel, domain, rdate, source, version_of(text), authority, deprecated))
+        out.append(
+            Doc(rel, domain, rdate, source, version_of(text), authority, deprecated)
+        )
     return out
 
 
@@ -202,7 +214,9 @@ def render_recent(docs: list[Doc]) -> str:
     ]
     for d in rows:
         flag = " ⭐" if d.authority else (" 🚫" if d.deprecated else "")
-        lines.append(f"| {d.rdate.isoformat()} | {d.source} | {d.domain} | [{d.rel}]({d.rel}){flag} |")
+        lines.append(
+            f"| {d.rdate.isoformat()} | {d.source} | {d.domain} | [{d.rel}]({d.rel}){flag} |"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -219,7 +233,9 @@ def render_authority(docs: list[Doc]) -> str:
         "|:---|:---:|:---:|",
     ]
     for d in auth:
-        lines.append(f"| [{d.rel}]({d.rel}) | {d.version or '—'} | {d.rdate.isoformat()} |")
+        lines.append(
+            f"| [{d.rel}]({d.rel}) | {d.version or '—'} | {d.rdate.isoformat()} |"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -229,7 +245,9 @@ def main() -> None:
     (DOCS / "_authority.md").write_text(render_authority(docs), encoding="utf-8")
     n_auth = sum(d.authority for d in docs)
     n_dep = sum(d.deprecated for d in docs)
-    print(f"Generated: {len(docs)} documents -> _recent.md, _authority.md (authority {n_auth} / deprecated {n_dep})")
+    print(
+        f"Generated: {len(docs)} documents -> _recent.md, _authority.md (authority {n_auth} / deprecated {n_dep})"
+    )
 
 
 if __name__ == "__main__":

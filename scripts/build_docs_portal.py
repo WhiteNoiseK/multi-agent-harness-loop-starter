@@ -40,11 +40,16 @@ def main() -> int:
 
     cmd = [sys.executable, "-m", "mkdocs", "build"]
     if "--strict" in args:
-        cmd.append("--strict")  # opt-in: links to repo-root files (AGENTS.md/.clauderules) live outside docs/ and would warn
+        cmd.append(
+            "--strict"
+        )  # opt-in: links to repo-root files (AGENTS.md/.clauderules) live outside docs/ and would warn
 
     code = _run(cmd)
     if code != 0:
-        print("\n[hint] Is MkDocs installed?  ->  pip install -r requirements-docs.txt", file=sys.stderr)
+        print(
+            "\n[hint] Is MkDocs installed?  ->  pip install -r requirements-docs.txt",
+            file=sys.stderr,
+        )
     return code
 
 

@@ -260,7 +260,7 @@ def _iter_string_leaves(obj: Any) -> list[str]:
     elif isinstance(obj, dict):
         for v in obj.values():
             leaves.extend(_iter_string_leaves(v))
-    elif isinstance(obj, (list, tuple)):
+    elif isinstance(obj, list | tuple):
         for item in obj:
             leaves.extend(_iter_string_leaves(item))
     return leaves
