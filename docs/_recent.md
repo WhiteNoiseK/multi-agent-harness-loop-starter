@@ -2,20 +2,24 @@
 
 # Most-recent-first catalog (context re-orientation entry point)
 
-> 47 documents total · most-recent first. Date-source priority: updated > created > filename > git > mtime. ⭐ = authority (§8) · 🚫 = deprecated (do not reference in operations)
+> 48 documents total · most-recent first. Date-source priority: updated > created > filename > git > mtime. ⭐ = authority (§8) · 🚫 = deprecated (do not reference in operations)
 
 | Date | Source | Domain | Document |
 |:---|:---:|:---|:---|
+| 2026-06-25 | mtime | ai-workflow | [ai-workflow/antigravity_automation_setup_guide.md](ai-workflow/antigravity_automation_setup_guide.md) |
+| 2026-06-14 | git | pm-guide | [pm-guide/recommendation_policy.md](pm-guide/recommendation_policy.md) |
+| 2026-06-14 | git | pm-guide | [pm-guide/lifecycle-standard.md](pm-guide/lifecycle-standard.md) |
+| 2026-06-14 | git | pm-guide | [pm-guide/ProductProposal.md](pm-guide/ProductProposal.md) |
+| 2026-06-14 | git | pm-guide | [pm-guide/PHASE_GATES.md](pm-guide/PHASE_GATES.md) |
+| 2026-06-14 | git | ai-workflow | [ai-workflow/test_plan.md](ai-workflow/test_plan.md) |
+| 2026-06-14 | git | ai-workflow | [ai-workflow/codex_loop_operating_policy.md](ai-workflow/codex_loop_operating_policy.md) |
+| 2026-06-14 | git | ai-workflow | [ai-workflow/codex_claude_review_protocol.md](ai-workflow/codex_claude_review_protocol.md) |
 | 2026-06-14 | git | (root) | [_knowledge-architecture.md](_knowledge-architecture.md) ⭐ |
-| 2026-06-13 | git | ai-workflow | [ai-workflow/gemini_automation_setup_guide.md](ai-workflow/gemini_automation_setup_guide.md) |
-| 2026-06-13 | git | ai-workflow | [ai-workflow/codex_loop_operating_policy.md](ai-workflow/codex_loop_operating_policy.md) |
+| 2026-06-14 | git | _harness | [_harness/quality-gates.md](_harness/quality-gates.md) |
+| 2026-06-14 | git | _harness | [_harness/compositional-verification.md](_harness/compositional-verification.md) |
 | 2026-06-13 | git | ai-workflow | [ai-workflow/codex_automation_setup_guide.md](ai-workflow/codex_automation_setup_guide.md) |
 | 2026-06-11 | git | retrospective | [retrospective/lessons_learned.md](retrospective/lessons_learned.md) |
-| 2026-06-11 | git | pm-guide | [pm-guide/recommendation_policy.md](pm-guide/recommendation_policy.md) |
-| 2026-06-11 | git | pm-guide | [pm-guide/lifecycle-standard.md](pm-guide/lifecycle-standard.md) |
 | 2026-06-11 | git | pm-guide | [pm-guide/STAGE_DEFINITION_RISKS.md](pm-guide/STAGE_DEFINITION_RISKS.md) |
-| 2026-06-11 | git | pm-guide | [pm-guide/ProductProposal.md](pm-guide/ProductProposal.md) |
-| 2026-06-11 | git | pm-guide | [pm-guide/PHASE_GATES.md](pm-guide/PHASE_GATES.md) |
 | 2026-06-11 | git | pm-guide | [pm-guide/DRIFT_LOCK.md](pm-guide/DRIFT_LOCK.md) |
 | 2026-06-11 | git | experiments | [experiments/_TEMPLATE_spike_report.md](experiments/_TEMPLATE_spike_report.md) |
 | 2026-06-11 | git | engineering | [engineering/_TEMPLATE_trade_study.md](engineering/_TEMPLATE_trade_study.md) |
@@ -30,7 +34,6 @@
 | 2026-06-11 | git | coding-convention | [coding-convention/Python.md](coding-convention/Python.md) |
 | 2026-06-11 | git | coding-convention | [coding-convention/JavaScript.md](coding-convention/JavaScript.md) |
 | 2026-06-11 | git | coding-convention | [coding-convention/C.md](coding-convention/C.md) |
-| 2026-06-11 | git | ai-workflow | [ai-workflow/test_plan.md](ai-workflow/test_plan.md) |
 | 2026-06-11 | git | ai-workflow | [ai-workflow/terminology.md](ai-workflow/terminology.md) |
 | 2026-06-11 | git | ai-workflow | [ai-workflow/tasks/T-001_research.md](ai-workflow/tasks/T-001_research.md) |
 | 2026-06-11 | git | ai-workflow | [ai-workflow/tasks/T-001_plan.md](ai-workflow/tasks/T-001_plan.md) |
@@ -45,9 +48,7 @@
 | 2026-06-11 | git | ai-workflow | [ai-workflow/deployment_log.md](ai-workflow/deployment_log.md) |
 | 2026-06-11 | git | ai-workflow | [ai-workflow/delivery_log.md](ai-workflow/delivery_log.md) |
 | 2026-06-11 | git | ai-workflow | [ai-workflow/decision_pending.md](ai-workflow/decision_pending.md) |
-| 2026-06-11 | git | ai-workflow | [ai-workflow/codex_claude_review_protocol.md](ai-workflow/codex_claude_review_protocol.md) |
 | 2026-06-11 | git | ai-tooling | [ai-tooling/AI_TOOLING.md](ai-tooling/AI_TOOLING.md) |
-| 2026-06-11 | git | _harness | [_harness/quality-gates.md](_harness/quality-gates.md) |
 | 2026-06-11 | git | _harness | [_harness/TASK_ID_GRAMMAR.md](_harness/TASK_ID_GRAMMAR.md) |
 | 2026-06-11 | git | (root) | [ENVIRONMENTS.md](ENVIRONMENTS.md) |
 | 2026-06-08 | updated | pm-guide | [pm-guide/security_gate.md](pm-guide/security_gate.md) |

@@ -31,7 +31,7 @@ docs/**
 .harness.toml
 AGENTS.md
 CODEX.md
-GEMINI.md
+ANTIGRAVITY.md
 CLAUDE.md
 .clauderules
 build / CI configuration files   (setup.py, pyproject.toml, .github/**, etc.)

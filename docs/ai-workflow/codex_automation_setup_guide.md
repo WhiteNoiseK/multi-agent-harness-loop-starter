@@ -155,4 +155,4 @@ After receiving a verdict:
 - Loop operating policy: `docs/ai-workflow/codex_loop_operating_policy.md`
 - Stage subagents (already present): `.claude/agents/{test-writer,impl-coder,refactor-fixer,score-auditor}.md`
 - Task id grammar: `docs/_harness/TASK_ID_GRAMMAR.md`
-- Gemini doc/wiki generation (NOT code review): `docs/ai-workflow/gemini_automation_setup_guide.md`
+- Antigravity (agy) doc/wiki generation (NOT code review): `docs/ai-workflow/antigravity_automation_setup_guide.md`

@@ -85,16 +85,16 @@ This project proceeds in **harness engineering** style, where AI agents code the
 |--------|------|-----------------------|
 | **Claude** | Orchestrator — plans, drives harness loop, runs verification, manages git | This file (CLAUDE.md) |
 | **Codex** | Reviewer (default) + Implementer when delegated — Stage 1 RED / Stage 2 GREEN / Stage 5 FIX | `CODEX.md` + `.codex/agents/*.toml` |
-| **Gemini** | Documentation Writer — docs/wiki only, never code | `GEMINI.md` |
+| **Antigravity** | Documentation Writer — docs/wiki only, never code | `ANTIGRAVITY.md` |
 
 **Every engine** must comply with the universal rules and write-scope contract in `AGENTS.md §12`.
-When Claude delegates a task to Codex or Gemini, the prompt must begin with the
+When Claude delegates a task to Codex or Antigravity, the prompt must begin with the
 "WRITE SCOPE IS CLOSED" header defined in `AGENTS.md §12.3`.
 
 ## 4. Task Execution Protocol
 
 > **Engine assignment per stage**: `AGENTS.md §12.4` — Codex runs Stage 1/2/5 when delegated; Claude orchestrates Stage 3/4/6.
-> Before delegating any stage to Codex or Gemini, prepend the "WRITE SCOPE IS CLOSED" header (`AGENTS.md §12.3`).
+> Before delegating any stage to Codex or Antigravity, prepend the "WRITE SCOPE IS CLOSED" header (`AGENTS.md §12.3`).
 
 ```
 1. Check the "next task" in progress.md

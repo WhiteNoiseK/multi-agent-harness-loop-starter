@@ -1,6 +1,6 @@
-# Claude × Codex × Gemini Multi-Agent Harness Loop Starter
+# Claude × Codex × Antigravity Multi-Agent Harness Loop Starter
 
-> **Claude builds. Codex reviews. Gemini documents. The gate re-runs everything — hallucinated results don't survive.**
+> **Claude builds. Codex reviews. Antigravity documents. The gate re-runs everything — hallucinated results don't survive.**
 
 [![License: MIT](https://img.shields.io/github/license/WhiteNoiseK/claude-codex-harness-loop-starter)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/WhiteNoiseK/claude-codex-harness-loop-starter?style=social)](https://github.com/WhiteNoiseK/claude-codex-harness-loop-starter/stargazers)
@@ -8,7 +8,7 @@
 ![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
 A **clone-and-go** starter kit for a **three-engine autonomous engineering loop**: Claude implements (Single Writer),
-Codex independently reviews (Independent Reviewer), and Gemini generates docs/wikis headlessly — all without
+Codex independently reviews (Independent Reviewer), and Antigravity generates docs/wikis headlessly — all without
 human copy-paste. On top of a proven 6-stage quality gate, a Foam knowledge base, and drift-locking, all in place
 **from day one**.
 
@@ -16,17 +16,17 @@ human copy-paste. On top of a proven 6-stage quality gate, a Foam knowledge base
 |:--|:--|:--|
 | **Claude** | Single Writer — implements, self-reviews (6-stage gate) | in-session via Agent tool |
 | **Codex** | Independent Reviewer — R0–R4 logic review | headless `codex exec` |
-| **Gemini** | Doc/Wiki Generator — Foam entries, research drafts, changelogs | headless `gemini -p` |
+| **Antigravity** | Doc/Wiki Generator — Foam entries, research drafts, changelogs | headless `agy -p` |
 
 ### Why it's different
 
 - 🔒 **Hallucination-proof gate** — every claimed pass count / coverage / type-check is **re-executed locally
   and diffed** (`claimed == actual`). Fabricated numbers die at the AUDIT stage *and* again at the commit guard.
 - 🧩 **Claude uses zero headless commands** — the full 6-stage build runs **in-session** via the Agent tool;
-  only the reviewer (Codex) and doc-generator (Gemini) run headless. **The loop keeps building even where `claude -p` is unavailable.**
+  only the reviewer (Codex) and doc-generator (Antigravity) run headless. **The loop keeps building even where `claude -p` is unavailable.**
 - ♾️ **Runs until a real problem** — findings self-heal in the FIX loop (severity is *not* a stop axis); it halts
   only on 5 real triggers (trust-collapse · 3× retry · safety-boundary · judgmental · spec-conflict).
-- 📝 **Gemini for docs, Codex for code** — role separation is strict: Gemini never touches code review, Codex never generates docs. Each engine stays in its lane.
+- 📝 **Antigravity for docs, Codex for code** — role separation is strict: Antigravity never touches code review, Codex never generates docs. Each engine stays in its lane.
 
 ```text
   Single Writer (Claude, in-session)            Independent Reviewer (Codex, headless)
@@ -144,13 +144,13 @@ The differentiator over the base starter kit: a **three-engine headless loop** w
 - **Activate**: set `enabled = true` in `.harness.toml [review_overlay]`. Decision engine = `scripts/auto_gate.py`; transport = `scripts/run_codex_review_bridge.py`.
 - **First run (consent gate)**: before the loop runs for the first time, the agent presents the stop-points and asks you to approve them as-is (`stop_points_acknowledged`). Thereafter the thresholds are your responsibility ([policy §0](docs/ai-workflow/codex_loop_operating_policy.md)).
 
-### 4b. Claude → Gemini: Document Generation
+### 4b. Claude → Antigravity: Document Generation
 
-- **Role**: Gemini = headless doc/wiki generator. **Not a code reviewer** — role is strictly document generation.
-- **Use cases**: Foam knowledge-base entries, `research.md` drafts from raw notes, changelogs, release notes, any task where Gemini's large context window is preferred.
-- **How**: Claude builds a generation prompt → sends headless via `gemini -p` → captures output → integrates as first draft. Setup: [docs/ai-workflow/gemini_automation_setup_guide.md](docs/ai-workflow/gemini_automation_setup_guide.md).
-- **Claude is always the final integrator**: Gemini output = first draft only. Claude verifies against single-authority specs before committing.
-- **Config**: `.harness.toml [review_overlay]` has a NOTE that Gemini is not listed as a reviewer — intentional.
+- **Role**: Antigravity = headless doc/wiki generator. **Not a code reviewer** — role is strictly document generation.
+- **Use cases**: Foam knowledge-base entries, `research.md` drafts from raw notes, changelogs, release notes, any task where Antigravity's large context window is preferred.
+- **How**: Claude builds a generation prompt → sends headless via `agy -p` → captures output → integrates as first draft. Setup: [docs/ai-workflow/antigravity_automation_setup_guide.md](docs/ai-workflow/antigravity_automation_setup_guide.md).
+- **Claude is always the final integrator**: Antigravity output = first draft only. Claude verifies against single-authority specs before committing.
+- **Config**: `.harness.toml [review_overlay]` has a NOTE that Antigravity is not listed as a reviewer — intentional.
 
 ### 4c. `/kit:recommend` — Dual-Engine Decision Scorecard
 

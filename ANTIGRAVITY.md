@@ -1,10 +1,14 @@
-# GEMINI.md — Gemini Documentation Writer Constraints
+# ANTIGRAVITY.md — Antigravity (agy) Documentation Writer Constraints
 
 > **Universal harness rules (role table, stage assignment, "WRITE SCOPE IS CLOSED" template)**
 > are defined in `AGENTS.md §12`. Read that section first — this file only covers
-> Gemini-specific details on top of the universal rules.
+> Antigravity-specific details on top of the universal rules.
+>
+> Antigravity is driven via its CLI **`agy`** (powered by Gemini models). In this kit it
+> replaces the former standalone Gemini CLI as the headless documentation engine — the role
+> and constraints are unchanged; only the CLI and its invocation differ.
 
-Gemini is a **Documentation Writer only**. It does not implement code, write tests, or commit.
+Antigravity is a **Documentation Writer only**. It does not implement code, write tests, or commit.
 
 ---
 
@@ -17,13 +21,13 @@ retrospective notes. All output is reviewed by Claude (the orchestrator) before 
 
 ## Write Scope
 
-Gemini may write only to `docs/**` with the exclusions listed below.
+Antigravity may write only to `docs/**` with the exclusions listed below.
 
-**Every Gemini task prompt must open with:**
+**Every Antigravity task prompt must open with:**
 
 ```
 WRITE SCOPE IS CLOSED.
-Read AGENTS.md §12 and GEMINI.md before starting.
+Read AGENTS.md §12 and ANTIGRAVITY.md before starting.
 
 You may create or modify ONLY these paths:
 - <explicit list under docs/>
@@ -66,7 +70,7 @@ setup.py
 .harness.toml
 AGENTS.md
 CODEX.md
-GEMINI.md
+ANTIGRAVITY.md
 CLAUDE.md
 .clauderules
 ```
@@ -99,6 +103,15 @@ Do not commit. The orchestrator (Claude) reviews output and commits.
 
 ## Safety Boundaries
 
-Gemini must not reference, describe implementation details of, or generate doc content that
+Antigravity must not reference, describe implementation details of, or generate doc content that
 would effectively design or spec out the safety-boundary paths in `.harness.toml [safety_boundary].paths`.
 If asked, stop and report to the user.
+
+---
+
+## Headless invocation
+
+The headless command, capture method, and pitfalls are documented in
+`docs/ai-workflow/antigravity_automation_setup_guide.md`. In short: send the prompt with
+`agy -p "<prompt>" --dangerously-skip-permissions`; if stdout is empty, read the model reply
+from the newest conversation transcript (see that guide §3.1).

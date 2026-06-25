@@ -69,8 +69,8 @@ paths = [
 # Independent-reviewer (e.g. Codex) R0-R4 overlay — the headless auto-collaboration layer.
 # Single Writer = Claude / Independent Reviewer = Codex. Driven by the /kit:auto-harness command.
 # How-to: docs/ai-workflow/codex_automation_setup_guide.md ; policy: docs/ai-workflow/codex_loop_operating_policy.md
-# NOTE: Gemini is NOT a code reviewer. Gemini = headless doc/wiki generation only.
-# See: docs/ai-workflow/gemini_automation_setup_guide.md
+# NOTE: Antigravity (agy) is NOT a code reviewer. Antigravity = headless doc/wiki generation only.
+# See: docs/ai-workflow/antigravity_automation_setup_guide.md
 enabled = true
 # SEVERITY IS NOT A STOP AXIS (default). At detection the problem is already identified, so every finding
 # (incl. HIGH/CRITICAL) self-heals in the 6-stage FIX loop; the loop stops only on the 5 axes

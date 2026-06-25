@@ -2,8 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(codex exec:*)",
-      "Bash(gemini -p *:*)",
-      "Bash(gemini --resume *:*)"
+      "Bash(agy -p *:*)",
+      "Bash(agy -c *:*)",
+      "Bash(agy --conversation *:*)"
     ]
   },
   "hooks": {

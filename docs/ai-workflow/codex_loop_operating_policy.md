@@ -57,7 +57,7 @@ Once acknowledged, the configured stop-points — **and the operator's choice no
 | Role | Default agent | Authority |
 |:---|:---|:---|
 | Single Writer | the implementing agent (e.g. Claude) | edits tests / code / docs within the scope of `plan.md` DoD |
-| Independent Reviewer | a second, independent agent (e.g. Codex, Gemini, or another instance) | read-only review by default; may edit only inside an explicit, user-named scope |
+| Independent Reviewer | a second, independent agent (e.g. Codex, or another Claude instance) | read-only review by default; may edit only inside an explicit, user-named scope |
 | Final decider | the human operator | safety boundaries, production deploy, scope expansion, rollback approval |
 
 Principles:

@@ -174,7 +174,7 @@ Rules:
 ## 11. Multi-Agent Collaboration (Single Writer / Independent Reviewer)
 
 > This kit supports a collaboration where **one agent implements (Single Writer) and a second agent verifies as an independent reviewer** —
-> e.g. **Claude implements ↔ Codex reviews independently** (or Gemini / another Claude instance).
+> e.g. **Claude implements ↔ Codex reviews independently** (or another Claude instance).
 > The governance **single source = [docs/ai-workflow/codex_claude_review_protocol.md](docs/ai-workflow/codex_claude_review_protocol.md)**.
 
 - **Activation**: `.harness.toml [review_overlay].enabled = true`.
@@ -188,9 +188,9 @@ Rules:
 
 ## 12. Multi-Engine Harness: Roles, Write Scope & Universal Rules
 
-> **This section applies to ALL engines** (Claude, Codex, Gemini).
+> **This section applies to ALL engines** (Claude, Codex, Antigravity).
 > When an engine starts any task, it must read §12 first and comply unconditionally.
-> Engine-specific detail files: `CODEX.md` (Codex raw exec) · `GEMINI.md` (Gemini doc tasks).
+> Engine-specific detail files: `CODEX.md` (Codex raw exec) · `ANTIGRAVITY.md` (Antigravity doc tasks).
 
 ### 12.1 Engine Role Assignment
 
@@ -198,7 +198,7 @@ Rules:
 |--------|------|-----------|-------------|
 | **Claude** | Orchestrator — drives harness loop, plans, verifies, manages git | Orchestration scope (`progress.md`, `scores/`, `reviews/`) + code only when acting as implementer | Safety boundaries without user approval |
 | **Codex** | Independent Reviewer (default) + Implementer when explicitly delegated — Stage 1 RED / Stage 2 GREEN / Stage 5 FIX via `.codex/agents/` named agents | Only files explicitly listed in the active task's DoD when acting as implementer; read-only when reviewing | `docs/**`, `.claude/**`, `.codex/**`, `.harness.toml`, build configs, CI files, `AGENTS.md`, `CODEX.md` |
-| **Gemini** | Documentation Writer — docs/wiki generation only | `docs/**` except governance files listed in §12.5 | `src/**`, `tests/**`, `scripts/**`, `.harness.toml`, `AGENTS.md`, `CODEX.md`, `GEMINI.md`, `.claude/**`, `.codex/**`, `*.toml`, `.github/**` |
+| **Antigravity** | Documentation Writer — docs/wiki generation only | `docs/**` except governance files listed in §12.5 | `src/**`, `tests/**`, `scripts/**`, `.harness.toml`, `AGENTS.md`, `CODEX.md`, `ANTIGRAVITY.md`, `.claude/**`, `.codex/**`, `*.toml`, `.github/**` |
 
 ### 12.2 Universal Rules (ALL engines, no exceptions)
 
@@ -212,11 +212,11 @@ Rules:
 
 ### 12.3 "WRITE SCOPE IS CLOSED" Protocol
 
-When Claude delegates any task to Codex or Gemini, the handoff prompt **must** open with:
+When Claude delegates any task to Codex or Antigravity, the handoff prompt **must** open with:
 
 ```
 WRITE SCOPE IS CLOSED.
-Read AGENTS.md §12 and CODEX.md (or GEMINI.md) before starting.
+Read AGENTS.md §12 and CODEX.md (or ANTIGRAVITY.md) before starting.
 
 You may create or modify ONLY these paths:
 - <path 1>
@@ -228,7 +228,7 @@ Report every changed path. Revert any out-of-scope change before reporting.
 Do not commit.
 ```
 
-Omitting this header from a raw `codex exec` or Gemini call is an operator error — not a model error.
+Omitting this header from a raw `codex exec` or Antigravity call is an operator error — not a model error.
 
 ### 12.4 Stage-by-Stage Engine Assignment
 
@@ -243,12 +243,12 @@ The 6-stage gate runs regardless of which engine implements the task:
 | 5 FIX | **Codex** (`refactor-fixer.toml`) or Claude | Scope limited to `findings[]` from Stage 4 |
 | 6 AUDIT | **Claude** (`score-auditor` agent) | Read-only + writes to `scores/` only |
 
-### 12.5 Gemini-Specific Rules
+### 12.5 Antigravity-Specific Rules
 
-- Gemini is a **Documentation Writer only** — it does not write code, run tests, or commit.
-- All Gemini output is **reviewed by Claude** before any commit.
-- Gemini prompt template must include the "WRITE SCOPE IS CLOSED" header (§12.3) with a docs-only allowlist.
-- Governance files that Gemini may **never** touch even within `docs/`:
+- Antigravity is a **Documentation Writer only** — it does not write code, run tests, or commit.
+- All Antigravity output is **reviewed by Claude** before any commit.
+- Antigravity prompt template must include the "WRITE SCOPE IS CLOSED" header (§12.3) with a docs-only allowlist.
+- Governance files that Antigravity may **never** touch even within `docs/`:
   `docs/_harness/**`, `docs/ai-workflow/progress.md`, `docs/ai-workflow/plan.md`,
   `docs/ai-workflow/scores/**`, `docs/ai-workflow/reviews/**`
-- See `GEMINI.md` for the full constraint file.
+- See `ANTIGRAVITY.md` for the full constraint file.
