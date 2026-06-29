@@ -146,18 +146,18 @@ The differentiator over the base starter kit: a **three-engine headless loop** w
 
 ### 4b. Claude → Antigravity: Document Generation
 
-- **Role**: Antigravity = headless doc/wiki generator. **Not a code reviewer** — role is strictly document generation.
+- **Role**: Antigravity = headless doc/wiki generator **+ read-only `/kit:recommend` 3rd-engine scorer** (§4c). **Not a code reviewer** — the R0-R4 review loop stays Codex; the recommend scorecard is logic-only (no pytest), like Codex's.
 - **Use cases**: Foam knowledge-base entries, `research.md` drafts from raw notes, changelogs, release notes, any task where Antigravity's large context window is preferred.
-- **How**: Claude builds a generation prompt → sends headless via `agy -p` → captures output → integrates as first draft. Setup: [docs/ai-workflow/antigravity_automation_setup_guide.md](docs/ai-workflow/antigravity_automation_setup_guide.md).
+- **How**: Claude builds a generation prompt → sends headless via the wrapper `scripts/agy_ask.ps1` (forces a same-drive-as-HOME cwd to dodge agy's Windows cross-drive transcript bug) → captures output → integrates as first draft. Setup: [docs/ai-workflow/antigravity_automation_setup_guide.md](docs/ai-workflow/antigravity_automation_setup_guide.md).
 - **Claude is always the final integrator**: Antigravity output = first draft only. Claude verifies against single-authority specs before committing.
 - **Config**: `.harness.toml [review_overlay]` has a NOTE that Antigravity is not listed as a reviewer — intentional.
 
-### 4c. `/kit:recommend` — Dual-Engine Decision Scorecard
+### 4c. `/kit:recommend` — Tri-Engine Decision Scorecard
 
-Every `/kit:recommend` call **always** runs both engines (no flag needed):
-1. Claude scores independently on 4 axes (stability · security · maintainability · visibility).
-2. Claude sends handoff to Codex → Codex scores independently.
-3. Synthesize: agreement = high-confidence pick · disagreement = show both scorecards side by side and escalate if stability/safety axes diverge.
+Every `/kit:recommend` call **always** runs all three engines (no flag needed):
+1. Claude scores independently on the 4 axes (stability · security · maintainability · visibility) + the no-temporary-fixes gate.
+2. Claude dispatches Codex (`codex exec … < /dev/null`) **and** Antigravity (via `scripts/agy_ask.ps1`) in parallel → each scores independently from first principles.
+3. Synthesize: unanimous = very-high-confidence pick · majority (2/3) = go with it but name the dissenter + diverging axis · three-way split = show all three scorecards side by side and escalate. A per-engine failure falls back gracefully (still deliver the others).
 
 Full file list: **TEMPLATE_MANIFEST.md §I**.
 

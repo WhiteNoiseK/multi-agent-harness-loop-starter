@@ -1,7 +1,7 @@
 # Antigravity CLI (`agy`) Headless Setup Guide — Document / Wiki Generation
 
-> Role: Antigravity is NOT a code reviewer in this project.
-> Antigravity's role = headless document and LLM wiki generation tasks.
+> Role: Antigravity is NOT a code reviewer in this project. Its roles = (1) headless document / LLM wiki
+> generation (this guide), and (2) read-only `/kit:recommend` 3rd-engine scorer (logic-only, no pytest).
 > Code review remains Claude (Writer) ↔ Codex (Reviewer).
 >
 > Antigravity (`agy`) is powered by Gemini models and replaces the former standalone Gemini CLI

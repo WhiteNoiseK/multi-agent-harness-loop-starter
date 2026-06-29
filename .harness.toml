@@ -69,7 +69,8 @@ paths = [
 # Independent-reviewer (e.g. Codex) R0-R4 overlay — the headless auto-collaboration layer.
 # Single Writer = Claude / Independent Reviewer = Codex. Driven by the /kit:auto-harness command.
 # How-to: docs/ai-workflow/codex_automation_setup_guide.md ; policy: docs/ai-workflow/codex_loop_operating_policy.md
-# NOTE: Antigravity (agy) is NOT a code reviewer. Antigravity = headless doc/wiki generation only.
+# NOTE: Antigravity (agy) is NOT a code reviewer (R0-R4 review = Codex). agy = headless doc/wiki generation
+#       + read-only /kit:recommend 3rd-engine scorer (logic-only, no pytest).
 # See: docs/ai-workflow/antigravity_automation_setup_guide.md
 enabled = true
 # SEVERITY IS NOT A STOP AXIS (default). At detection the problem is already identified, so every finding

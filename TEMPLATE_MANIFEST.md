@@ -147,11 +147,12 @@ Status legend: **AS-IS** use as-is · **PARAM** placeholder substitution needed 
 | `.codex/agents/{test-writer,impl-coder,refactor-fixer,score-auditor}.toml` | **Codex-side role agents** — mirror the `.claude/agents/` 6-stage roles for the independent reviewer | PARAM |
 | `.codex/hooks.json` | Codex PreToolUse hook → `scripts/harness_gate_check.sh` (same gate as the Claude side) | AS-IS |
 | `.harness.toml [review_overlay]` / `[integrity]` | Loop config — `enabled` · `severity_auto_max` · `fact_layer_required` · `stop_points_acknowledged` (first-run consent gate; operator owns the unchanged thresholds) + the review hash manifest (reviewer no-edit detection) | PARAM ✅ |
-| `.claude/commands/kit/recommend.md` | **`/kit:recommend [focus]`** — recommendation under the 4-column policy (stability/security/maintainability/visibility + no temp fix); a trailing arg weights one axis. General-purpose (bundled with the loop edition, not loop-specific) | AS-IS |
+| `.claude/commands/kit/recommend.md` | **`/kit:recommend [focus]`** — **tri-engine** (Claude + Codex + Antigravity) recommendation under the 4-column policy (stability/security/maintainability/visibility + no temp fix); a trailing arg weights one axis. General-purpose (bundled with the loop edition, not loop-specific) | AS-IS |
 | `.claude/commands/kit/resume-break.md` | **`/kit:resume-break [hint]`** — analyze the break point + fact-layer check (claimed==actual) + safe resume from the unfinished stage only. General-purpose | AS-IS |
+| `.claude/commands/kit/checkpoint.md` | **`/kit:checkpoint [hint]`** — the write-side complement of `/kit:resume-break`: record a clean break point (progress.md break block · scores · resume-prompt · memory) after a fact-layer check, so a fresh session resumes with zero loss / zero duplicate work. General-purpose | AS-IS |
 
-> **Command namespace.** All four bundled commands live under `.claude/commands/kit/`, so they group under one
-> typeable prefix — type `/kit` and `/kit:harness-verify · /kit:auto-harness · /kit:recommend · /kit:resume-break`
+> **Command namespace.** All five bundled commands live under `.claude/commands/kit/`, so they group under one
+> typeable prefix — type `/kit` and `/kit:harness-verify · /kit:auto-harness · /kit:recommend · /kit:resume-break · /kit:checkpoint`
 > appear together (and never collide with global/ECC commands).
 | `tests/unit/test_auto_gate.py` · `test_codex_review_bridge.py` | Tests for the two loop scripts (123 + 46) — bundled so the loop layer ships verified | AS-IS |
 

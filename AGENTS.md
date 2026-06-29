@@ -198,7 +198,7 @@ Rules:
 |--------|------|-----------|-------------|
 | **Claude** | Orchestrator — drives harness loop, plans, verifies, manages git | Orchestration scope (`progress.md`, `scores/`, `reviews/`) + code only when acting as implementer | Safety boundaries without user approval |
 | **Codex** | Independent Reviewer (default) + Implementer when explicitly delegated — Stage 1 RED / Stage 2 GREEN / Stage 5 FIX via `.codex/agents/` named agents | Only files explicitly listed in the active task's DoD when acting as implementer; read-only when reviewing | `docs/**`, `.claude/**`, `.codex/**`, `.harness.toml`, build configs, CI files, `AGENTS.md`, `CODEX.md` |
-| **Antigravity** | Documentation Writer — docs/wiki generation only | `docs/**` except governance files listed in §12.5 | `src/**`, `tests/**`, `scripts/**`, `.harness.toml`, `AGENTS.md`, `CODEX.md`, `ANTIGRAVITY.md`, `.claude/**`, `.codex/**`, `*.toml`, `.github/**` |
+| **Antigravity** | Documentation Writer (docs/wiki generation) + **read-only `/kit:recommend` 3rd-engine scorer** (NOT a code reviewer — R0-R4 review stays Codex) | `docs/**` except governance files listed in §12.5 (recommend scoring writes nothing) | `src/**`, `tests/**`, `scripts/**`, `.harness.toml`, `AGENTS.md`, `CODEX.md`, `ANTIGRAVITY.md`, `.claude/**`, `.codex/**`, `*.toml`, `.github/**` |
 
 ### 12.2 Universal Rules (ALL engines, no exceptions)
 
@@ -245,7 +245,7 @@ The 6-stage gate runs regardless of which engine implements the task:
 
 ### 12.5 Antigravity-Specific Rules
 
-- Antigravity is a **Documentation Writer only** — it does not write code, run tests, or commit.
+- Antigravity is a **Documentation Writer** + a **read-only `/kit:recommend` scorer** — it does not write code, run tests, review code (R0-R4 = Codex), or commit.
 - All Antigravity output is **reviewed by Claude** before any commit.
 - Antigravity prompt template must include the "WRITE SCOPE IS CLOSED" header (§12.3) with a docs-only allowlist.
 - Governance files that Antigravity may **never** touch even within `docs/`:

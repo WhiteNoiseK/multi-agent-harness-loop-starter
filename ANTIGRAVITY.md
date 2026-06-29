@@ -8,7 +8,7 @@
 > replaces the former standalone Gemini CLI as the headless documentation engine — the role
 > and constraints are unchanged; only the CLI and its invocation differ.
 
-Antigravity is a **Documentation Writer only**. It does not implement code, write tests, or commit.
+Antigravity is a **Documentation Writer** and a **read-only `/kit:recommend` scorer** (see `.claude/commands/kit/recommend.md`). It does not implement code, write tests, review code (R0-R4 = Codex), or commit.
 
 ---
 
