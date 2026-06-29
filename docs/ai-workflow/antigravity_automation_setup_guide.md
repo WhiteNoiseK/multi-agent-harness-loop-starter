@@ -67,10 +67,30 @@ Restart the Claude Code session after saving.
 
 `agy -p` runs a single prompt non-interactively and prints the response (`--print` and `--prompt` are equivalent aliases of `-p`). The `.claude/settings.json` allowlist in §2 covers `agy -p` plus the resume forms `agy -c` / `agy --conversation`.
 
+> ### ⚠️ Windows cross-drive gotcha — the #1 reason headless `agy` "doesn't work" (READ THIS)
+>
+> `agy -p` authenticates and the model **does** answer, but on Windows agy's transcript writer builds a bogus
+> POSIX path (`/Users/<user>/.gemini/...`) and **fails to persist the reply when the current working directory
+> is on a DIFFERENT DRIVE than HOME** (e.g. a project on `D:` / `I:` while HOME is on `C:`). Its stdout is
+> empty too — so the reply is generated but **lost**, and it looks like agy never responds.
+> **Fix:** run `agy` from a cwd on the **same drive as HOME**, give stdin a clean EOF so print mode completes,
+> pass the prompt as one argument, and read the reply from the transcript. The bundled wrapper does all of
+> this — **prefer it**:
+>
+> ```powershell
+> Set-Content -LiteralPath "$env:TEMP\agy_prompt.txt" -Value $prompt_text -Encoding utf8
+> # run from the repo root; reply is printed between '=== AGY REPLY START/END ===' (or 'AGY_UNAVAILABLE: ...'):
+> & ".\scripts\agy_ask.ps1" -PromptFile "$env:TEMP\agy_prompt.txt" -Model 'Gemini 3.1 Pro (High)'
+> # to let agy WRITE docs/** directly in a project on another drive, add:  -AddDir "<project-root>"
+> ```
+>
+> (macOS / Linux have no drive letters, so this fault does not occur there — the manual recipe below works as-is.)
+
+The manual equivalent (what the wrapper does), if you are not using it:
+
 ```powershell
 # Write the generation prompt to a file (avoids shell-quoting issues with long / non-ASCII text)
 $prompt_file = Join-Path $env:TEMP "agy_doc_prompt.txt"
-$out_file    = Join-Path $env:TEMP "agy_doc_out.txt"
 Set-Content -LiteralPath $prompt_file -Value $prompt_text -Encoding utf8
 $prompt = Get-Content -LiteralPath $prompt_file -Raw -Encoding utf8
 
@@ -80,9 +100,13 @@ $prompt = Get-Content -LiteralPath $prompt_file -Raw -Encoding utf8
 #                                     cannot be answered from a background/headless caller)
 #   --model <id>                     optional model override (see `agy models`)
 #   --print-timeout 120s             max wait for the response (default 5m)
-agy -p $prompt --dangerously-skip-permissions --print-timeout 120s > $out_file 2>&1
-
-Get-Content -LiteralPath $out_file -Raw -Encoding utf8
+# Run from a cwd on the SAME DRIVE as HOME (cross-drive loses the transcript — see the gotcha above),
+# give a clean EOF on stdin ($null |) so print mode completes, and pass the prompt as ONE argument.
+$ws = Join-Path $env:USERPROFILE 'AppData\Local\Temp\agy_ws'; New-Item -ItemType Directory -Force $ws | Out-Null
+Push-Location $ws
+$null | & agy -p $prompt --model 'Gemini 3.1 Pro (High)' --dangerously-skip-permissions --print-timeout 120s | Out-Null
+Pop-Location
+# stdout is empty by design here — read the reply from the newest transcript (§3.1).
 ```
 
 > **Why `--dangerously-skip-permissions` is required headlessly.** Without it, `agy` raises an
@@ -111,8 +135,10 @@ Get-Content -LiteralPath $tr.FullName -Encoding utf8 |
 - Each line is one JSON step; the model reply is the step with `type = "PLANNER_RESPONSE"` and
   `source = "MODEL"` — its `content` field is the answer (its `thinking` field is the reasoning trace).
 - This transcript path is the reliable capture method in fully headless contexts — **prefer it over
-  parsing stdout** when automating. Do not rely on a stdin trick (`< /dev/null` gives an immediate
-  EOF that can truncate the stream; an open stdin can hang). The transcript is the source of truth.
+  parsing stdout** when automating. **Give stdin a clean EOF** (`$null | & agy …`, which the wrapper does)
+  so print mode completes — an **open stdin that never closes hangs**. A clean EOF does **not** truncate the
+  answer; the earlier "EOF truncates the stream" belief was a misdiagnosis of the Windows cross-drive
+  transcript failure (§3 gotcha). The transcript is the source of truth.
 
 ---
 
@@ -147,7 +173,8 @@ Claude must verify factual accuracy against single-authority specs before commit
 
 | Problem | Fix |
 |---|---|
-| Command hangs, no output | add `--dangerously-skip-permissions` (a permission popup is blocking); make sure you are not waiting on an open stdin |
+| **Reply lost — empty stdout AND no/empty transcript (Windows)** | **cwd is on a different DRIVE than HOME** → agy writes the transcript to a bogus `/Users/...` path and loses it. Run from a cwd on the **same drive as HOME** (the wrapper `scripts/agy_ask.ps1` does this). This is the **#1 cause** of "agy doesn't respond". |
+| Command hangs, no output | add `--dangerously-skip-permissions` (a permission popup is blocking); give stdin a **clean EOF** (`$null \| & agy …`) — an **open stdin hangs**; pass the prompt as ONE argv |
 | `$out_file` is empty though the model answered | print mode exited before flushing stdout — read the transcript (§3.1); this is the reliable path when headless |
 | Non-ASCII (Korean) in prompt → garbled | write the prompt to a temp file with `Set-Content -Encoding utf8`, pass via `Get-Content -Raw` |
 | Logs show `not logged into Antigravity` | complete the browser OAuth once by running `agy` interactively (logs: `~/.gemini/antigravity-cli/log/*.log`) |

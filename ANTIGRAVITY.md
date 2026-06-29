@@ -112,6 +112,8 @@ If asked, stop and report to the user.
 ## Headless invocation
 
 The headless command, capture method, and pitfalls are documented in
-`docs/ai-workflow/antigravity_automation_setup_guide.md`. In short: send the prompt with
-`agy -p "<prompt>" --dangerously-skip-permissions`; if stdout is empty, read the model reply
-from the newest conversation transcript (see that guide §3.1).
+`docs/ai-workflow/antigravity_automation_setup_guide.md`. In short: **use the wrapper**
+`scripts/agy_ask.ps1` — it runs `agy` from a cwd on the **same drive as HOME**, gives stdin a clean EOF,
+passes an explicit `--model`, and reads the reply from the newest transcript. Calling `agy -p` directly
+from a project on a **different drive than HOME silently loses the reply on Windows** (the #1 headless
+failure — see that guide §3). For doc tasks that write `docs/**` directly, pass `-AddDir "<project-root>"`.
